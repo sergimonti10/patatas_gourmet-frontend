@@ -1,11 +1,11 @@
 'use client'
 
-import Products from "@/app/ui/productsComponents/products";
-import { ProductCardSkeleton } from "@/app/ui/skeletons";
+import Products from "@/app/components/productsComponents/products";
+import { ProductCardSkeleton } from "@/app/components/general/skeletons";
 import { Suspense } from "react";
 import useUserStore from "../../../../store/authStore";
 
-export default async function InvoicesPage() {
+export default function InvoicesPage() {
 
     const { user } = useUserStore();
 
