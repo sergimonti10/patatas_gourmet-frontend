@@ -1,14 +1,24 @@
-const shimmer =
-  'before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent';
+// LoadingWave.jsx
+import React from 'react';
+import { fontClasses } from '../fonts';
 
-export function ProductCardSkeleton() {
+const waveAnimation = 'inline-block animate-wave';
+
+export function LoadingWave() {
+  const text = 'PatatasGourmet...';
   return (
-    <div className="flex justify-center items-center h-40 w-40 rounded-full bg-gray-200 animate-pulse">
-      <div className="h-16 w-16 rounded-full bg-gray-300"></div>
+    <div className="flex justify-center items-center h-screen">
+      <div className={`text-2xl sm:text-3xl text-amber-950 ${fontClasses['font-pinyon']}`}>
+        {text.split('').map((char, index) => (
+          <span
+            key={index}
+            className={waveAnimation}
+            style={{ animationDelay: `${index * 0.1}s` }}
+          >
+            {char}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
-
-
-
-

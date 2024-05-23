@@ -3,7 +3,6 @@ import { fontClasses } from "./components/fonts";
 import CardHome from "./components/homeComponents/cardHome";
 import { FaUser } from 'react-icons/fa';
 import { FaShopSlash, FaShop } from 'react-icons/fa6';
-import { Button } from '@nextui-org/react';
 
 
 export default function Home() {
@@ -19,10 +18,8 @@ export default function Home() {
             </h1>
           </div>
         </header>
-        <Button color="primary">
-          Button
-        </Button>
-        <div className="flex-grow flex flex-col w-full overflow-hidden z-10 sm:mt-52">
+
+        <div className="flex-grow flex flex-col w-full overflow-hidden z-10 h-full items-center">
           <div className="flex-shrink-0 h-16"></div>
           <div className="overflow-auto w-full h-full">
             <section className="bg-gradient-radial from-amber-500 to-transparent p-6 w-full items-stretch min-w-min flex flex-col lg:flex-row justify-center gap-4">

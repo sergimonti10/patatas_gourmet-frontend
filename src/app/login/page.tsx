@@ -29,7 +29,7 @@ export default function LoginPage() {
                         </h1>
                     </div>
                 </header>
-                <div className="flex-grow flex flex-col w-full overflow-hidden z-10 mt-40">
+                <div className="flex-grow flex flex-col w-full overflow-hidden z-10 h-full items-center">
                     <div className="flex-shrink-0 h-16"></div>
                     <section className="overflow-auto w-full h-full">
                         <div className="p-6 w-full min-w-min">

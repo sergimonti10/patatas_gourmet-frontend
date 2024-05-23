@@ -1,3 +1,4 @@
+import { Button } from '@nextui-org/react';
 import React from 'react';
 
 const CardLogin = ({ handleSubmit, email, password, setEmail, setPassword, error }) => {
@@ -17,7 +18,7 @@ const CardLogin = ({ handleSubmit, email, password, setEmail, setPassword, error
 
           {error && <div className="text-red-700 grid font-bold place-content-center mb-4">{error}</div>}
           <div className='grid place-content-center'>
-            <button className="hover:from-amber-700 hover:to-amber-900 bg-gradient-to-t from-amber-600 to-amber-700 shadow-md transition-all active:scale-95 text-white font-bold py-2 px-4 rounded-md">Iniciar sesión</button>
+            <Button className="hover:from-amber-700 hover:to-amber-900 bg-gradient-to-t from-amber-600 to-amber-700 shadow-md transition-all active:scale-95 text-white font-bold py-2 px-4 rounded-md">Iniciar sesión</Button>
           </div>
           {/* <p className='link text-center'>¿Olvidaste tu contraseña?</p> Añadir link */}
           {/* <Button className='button'>Registrarse</Button> */}
