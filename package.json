@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@next/font": "^14.2.3",
     "@nextui-org/react": "^2.3.6",
     "axios": "^1.6.8",
     "cross-spawn": "^7.0.3",
