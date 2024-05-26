@@ -1,9 +1,10 @@
 import useAuthStore from "../../store/authStore";
-export async function fetchProducts({ token }: { token: string }) {
+
+export async function fetchProducts() {
   try {
     const response = await fetch('http://127.0.0.1:8000/api/products', {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      headers: { 'Content-Type': 'application/json' }
     });
     if (!response.ok) {
       throw new Error(`Error en la solicitud: ${response.status} - ${response.statusText}`);

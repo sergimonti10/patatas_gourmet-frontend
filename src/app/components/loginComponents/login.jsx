@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { toast } from 'react-toastify';
 import FormLogin from "./cardLogin";
 import useUserStore from '../../../../store/authStore';
 import { fetchLogin } from "../../../services/data";
@@ -7,11 +8,7 @@ const Login = ({ router }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
-    const { setUser, user, role, token, setToken, setRole } = useUserStore();
-
-    console.log("User", user);
-    console.log("Role", role);
-    console.log("Token", token);
+    const { setUser, setToken, setRole } = useUserStore();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -34,7 +31,7 @@ const Login = ({ router }) => {
                 setUser(data.user);
                 setToken(data.auth_token);
                 setRole(data.roles);
-                console.log(data.message);
+                toast.success(data.message);
                 router.push('/dashboard');
             } else {
                 throw new Error(data.message || 'Error al iniciar sesión');
@@ -42,6 +39,7 @@ const Login = ({ router }) => {
         } catch (error) {
             console.error('Error:', error);
             setError(error.message || 'Ha ocurrido un error al intentar iniciar sesión.');
+            toast.error(error.message || 'Ha ocurrido un error al intentar iniciar sesión.');
         }
     }
 

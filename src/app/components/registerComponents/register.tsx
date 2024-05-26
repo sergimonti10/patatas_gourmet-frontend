@@ -22,11 +22,7 @@ const Register = ({ router }: RegisterProps) => {
     const [image, setImage] = useState<File | null>(null);
     const [phone, setPhone] = useState("");
     const [error, setError] = useState("");
-    const { setUser, user, role, token, setToken, setRole } = useUserStore();
-
-    console.log("User", user);
-    console.log("Role", role);
-    console.log("Token", token);
+    const { setUser, setToken, setRole } = useUserStore();
 
     const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
         event.preventDefault();

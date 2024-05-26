@@ -2,17 +2,17 @@
 
 import { useRouter } from "next/navigation";
 import { FaArrowLeft } from 'react-icons/fa'
-import Link from "next/link";
 import Image from "next/image";
 import { fontClasses } from "../components/fonts";
 import Register from "../components/registerComponents/register";
+import { Link } from "@nextui-org/react";
 
 export default function RegisterPage() {
     const router = useRouter();
 
     return (
         <div className="bg-cover bg-center flex h-screen flex-col md:flex-row">
-            <Image src="/images/home.png" alt="Background Image" layout="fill" objectFit="cover" className="z-0" />
+            <Image src="/images/home.png" alt="Background Image" fill className="z-0 object-cover" />
             <div className="absolute inset-0 z-10 flex flex-col items-center w-full h-full">
                 <div className="absolute top-0 left-0 w-full h-1/5 bg-gradient-to-b from-white to-transparent z-10"></div>
                 <header className="flex items-center py-4 w-full z-20">

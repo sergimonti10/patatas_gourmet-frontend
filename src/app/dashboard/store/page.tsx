@@ -5,7 +5,7 @@ import { LoadingWave } from "@/app/components/general/skeletons";
 import { Suspense, useEffect } from "react";
 import useUserStore from "../../../../store/authStore";
 
-export default function InvoicesPage() {
+export default function StorePage() {
 
     const { user } = useUserStore();
 

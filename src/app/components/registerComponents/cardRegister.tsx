@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { fontClasses } from '../fonts';
 
 interface CardProps {
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
