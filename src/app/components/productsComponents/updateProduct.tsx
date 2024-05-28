@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import CardCreateProduct from "./cardCreateProduct";
-import { useRouter } from 'next/navigation';
+import CardUpdateProduct from "./cardUpdateProduct";
+import { useRouter, useSearchParams } from 'next/navigation';
 import useUserStore from '../../../../store/authStore';
-import { PRODUCTS_BASE_URL } from "@/services/links";
+import { PRODUCT_ID_BASE_URL } from "@/services/links";
 import { toast } from "react-toastify";
 
-interface CreateProductProps {
+interface UpdateProductProps {
     router: ReturnType<typeof useRouter>;
 }
 
-const CreateProduct = ({ router }: CreateProductProps) => {
+const UpdateProduct = ({ router }: UpdateProductProps) => {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState("");
@@ -19,6 +19,8 @@ const CreateProduct = ({ router }: CreateProductProps) => {
     const [idCut, setIdCut] = useState<string | null>(null);
     const [error, setError] = useState("");
     const { token } = useUserStore();
+    const searchParams = useSearchParams();
+    const productId = searchParams.get('id') || '';
 
     const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
         event.preventDefault();
@@ -37,9 +39,8 @@ const CreateProduct = ({ router }: CreateProductProps) => {
         formData.append('id_cut', idCut || '');
 
         try {
-
-            const productsResponse = await fetch(PRODUCTS_BASE_URL, {
-                method: 'POST',
+            const response = await fetch(`${PRODUCT_ID_BASE_URL}${productId}`, {
+                method: 'PUT',
                 headers: {
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${token}`,
@@ -48,24 +49,24 @@ const CreateProduct = ({ router }: CreateProductProps) => {
                 body: formData,
             });
 
-            if (!productsResponse.ok) {
-                toast.error("Error al crear el producto");
-                const errorData = await productsResponse.json();
-                throw new Error(errorData.message || 'Error al crear el producto');
+            if (!response.ok) {
+                toast.error("Error al actualizar el producto");
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Error al actualizar el producto');
             }
 
-            const data = await productsResponse.json();
+            const data = await response.json();
             console.log(data);
-            toast.success("¡Producto creado correctamente!");
-            router.push('/dashboard/admin');
+            toast.success("¡Producto actualizado correctamente!");
+            router.push('/dashboard/admin/products');
         } catch (error: any) {
             console.error('Error:', error);
-            setError(error.message || 'Ha ocurrido un error al intentar crear el producto.');
+            setError(error.message || 'Ha ocurrido un error al intentar actualizar el producto.');
         }
     };
 
     return (
-        <CardCreateProduct
+        <CardUpdateProduct
             handleSubmit={handleSubmit}
             name={name}
             description={description}
@@ -82,8 +83,9 @@ const CreateProduct = ({ router }: CreateProductProps) => {
             setImage2={setImage2}
             setIdCut={setIdCut}
             error={error}
+            productId={productId}
         />
     );
 };
 
-export default CreateProduct;
+export default UpdateProduct;

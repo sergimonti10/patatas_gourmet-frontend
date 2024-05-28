@@ -1,5 +1,3 @@
-import { Suspense } from 'react';
-import { LoadingCard } from '@/app/components/general/skeletons';
 import ProductDetailLoader from '@/app/components/productsComponents/productDetailLoader';
 
 interface ProductDetailProps {

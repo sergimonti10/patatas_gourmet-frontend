@@ -64,9 +64,9 @@ const ProductDetailLoader = ({ params }: ProductDetailProps) => {
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out"></div>
                 </div>
             </div>
-            <p className="text-xl mb-2 font-bold border rounded-md p-4">Precio: {product?.price} €</p>
-            <p className="text-xl mb-2 font-bold border rounded-md p-4">Peso: {product?.weight}</p>
             <p className='text-xl my-4 font-bold border rounded-md p-4'>{product?.description}</p>
+            <p className="text-xl mb-2 font-bold border rounded-md p-4">Precio: {product?.price} €</p>
+            <p className="text-xl mb-2 font-bold border rounded-md p-4">Peso: {product?.weight} kg</p>
         </div>
     );
 };
