@@ -7,9 +7,13 @@ import { toast } from "react-toastify";
 
 interface UpdateProductProps {
     router: ReturnType<typeof useRouter>;
+    params: {
+        id: string;
+    }
 }
 
-const UpdateProduct = ({ router }: UpdateProductProps) => {
+const UpdateProduct = ({ router, params }: UpdateProductProps) => {
+    const { id } = params;
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState("");
@@ -19,11 +23,20 @@ const UpdateProduct = ({ router }: UpdateProductProps) => {
     const [idCut, setIdCut] = useState<string | null>(null);
     const [error, setError] = useState("");
     const { token } = useUserStore();
-    const searchParams = useSearchParams();
-    const productId = searchParams.get('id') || '';
+
+    console.log("id product:", id);
 
     const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
         event.preventDefault();
+
+        // Verifica si todos los campos requeridos tienen valores
+        console.log("nombre: ", name);
+        console.log("peso: ", weight);
+        console.log("precio: ", price);
+        console.log("descripcion: ", description);
+        console.log("corte: ", idCut);
+        console.log("nombre: ", name);
+
 
         const formData = new FormData();
         formData.append('name', name);
@@ -38,8 +51,10 @@ const UpdateProduct = ({ router }: UpdateProductProps) => {
         }
         formData.append('id_cut', idCut || '');
 
+        console.log("FormData:", formData);
+
         try {
-            const response = await fetch(`${PRODUCT_ID_BASE_URL}${productId}`, {
+            const response = await fetch(`${PRODUCT_ID_BASE_URL}${id}`, {
                 method: 'PUT',
                 headers: {
                     'Accept': 'application/json',
@@ -83,7 +98,7 @@ const UpdateProduct = ({ router }: UpdateProductProps) => {
             setImage2={setImage2}
             setIdCut={setIdCut}
             error={error}
-            productId={productId}
+            productId={id}
         />
     );
 };
