@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Input, Select, SelectItem } from "@nextui-org/react";
-import { CUTS_BASE_URL, PRODUCT_ID_BASE_URL } from '@/services/links';
+import { CUTS_BASE_URL, PRODUCTS_BASE_URL, IMAGE_PRODUCTS_BASE_URL } from '@/services/links';
 import useUserStore from '../../../../store/authStore';
 
 interface Cut {
@@ -8,7 +8,7 @@ interface Cut {
     name: string;
 }
 
-interface CardUpdateProps {
+interface CardProps {
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
     name: string;
     description: string;
@@ -17,6 +17,7 @@ interface CardUpdateProps {
     image: File | null;
     image2: File | null;
     id_cut: string | null;
+    name_cut: string | null;
     setName: (name: string) => void;
     setDescription: (description: string) => void;
     setPrice: (price: string) => void;
@@ -24,16 +25,18 @@ interface CardUpdateProps {
     setImage: (image: File | null) => void;
     setImage2: (image: File | null) => void;
     setIdCut: (id_cut: string | null) => void;
+    setNameIdCut: (name_cut: string | null) => void;
     error: string;
     productId: string;
 }
 
-const CardUpdateProduct: React.FC<CardUpdateProps> = ({
-    handleSubmit, name, description, price, weight, image, image2, id_cut,
-    setName, setDescription, setPrice, setWeight, setImage, setImage2, setIdCut, error, productId
+const CardUpdateProduct: React.FC<CardProps> = ({
+    handleSubmit, name, description, price, weight, image, image2, id_cut, name_cut,
+    setName, setDescription, setPrice, setWeight, setImage, setImage2, setIdCut, setNameIdCut, error, productId
 }) => {
     const [cuts, setCuts] = useState<Cut[]>([]);
     const { token } = useUserStore();
+    const [productImages, setProductImages] = useState({ image: '', image2: '' });
 
     useEffect(() => {
         fetch(CUTS_BASE_URL, {
@@ -44,8 +47,10 @@ const CardUpdateProduct: React.FC<CardUpdateProps> = ({
             .then(response => response.json())
             .then(data => setCuts(data))
             .catch(error => console.error('Error fetching cuts:', error));
+    }, [token]);
 
-        fetch(`${PRODUCT_ID_BASE_URL}${productId}`, {
+    useEffect(() => {
+        fetch(`${PRODUCTS_BASE_URL}/${productId}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -57,9 +62,14 @@ const CardUpdateProduct: React.FC<CardUpdateProps> = ({
                 setPrice(data.price);
                 setWeight(data.weight);
                 setIdCut(data.id_cut);
+                setNameIdCut(data.cut.name);
+                setProductImages({
+                    image: `${IMAGE_PRODUCTS_BASE_URL}${data.image}`,
+                    image2: `${IMAGE_PRODUCTS_BASE_URL}${data.image2}`,
+                });
             })
             .catch(error => console.error('Error fetching product:', error));
-    }, [token, productId, setName, setDescription, setPrice, setWeight, setIdCut]);
+    }, [productId, token, setName, setDescription, setPrice, setWeight, setIdCut]);
 
     return (
         <div className='h-full w-full flex justify-center items-center'>
@@ -113,6 +123,9 @@ const CardUpdateProduct: React.FC<CardUpdateProps> = ({
                         </div>
                         <div className='text-lg md:text-xl'>
                             <label htmlFor="image">Imagen</label>
+                            {productImages.image && (
+                                <img src={productImages.image} alt="Imagen actual" className="h-20 w-20 rounded-xl mb-2" />
+                            )}
                             <input
                                 type="file"
                                 id="image"
@@ -126,6 +139,9 @@ const CardUpdateProduct: React.FC<CardUpdateProps> = ({
                         </div>
                         <div className='text-lg md:text-xl'>
                             <label htmlFor="image2">Imagen 2</label>
+                            {productImages.image2 && (
+                                <img src={productImages.image2} alt="Imagen 2 actual" className="h-20 w-20 rounded-xl mb-2" />
+                            )}
                             <input
                                 type="file"
                                 id="image2"
@@ -140,7 +156,7 @@ const CardUpdateProduct: React.FC<CardUpdateProps> = ({
                         <div className="text-lg md:text-xl">
                             <label htmlFor="id_cut">Tipo de Corte</label>
                             <Select
-                                label="Selecciona un corte"
+                                label={name_cut}
                                 className="max-w-xs"
                                 name="id_cut"
                                 id="id_cut"

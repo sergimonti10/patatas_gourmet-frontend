@@ -1,19 +1,16 @@
 import React, { useState } from "react";
+import { useRouter } from 'next/navigation';
 import CardUpdateProduct from "./cardUpdateProduct";
-import { useRouter, useSearchParams } from 'next/navigation';
 import useUserStore from '../../../../store/authStore';
 import { PRODUCT_ID_BASE_URL } from "@/services/links";
 import { toast } from "react-toastify";
 
 interface UpdateProductProps {
     router: ReturnType<typeof useRouter>;
-    params: {
-        id: string;
-    }
+    params: { id: string };
 }
 
 const UpdateProduct = ({ router, params }: UpdateProductProps) => {
-    const { id } = params;
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState("");
@@ -21,22 +18,13 @@ const UpdateProduct = ({ router, params }: UpdateProductProps) => {
     const [image, setImage] = useState<File | null>(null);
     const [image2, setImage2] = useState<File | null>(null);
     const [idCut, setIdCut] = useState<string | null>(null);
+    const [nameCut, setNameIdCut] = useState<string | null>(null);
     const [error, setError] = useState("");
     const { token } = useUserStore();
-
-    console.log("id product:", id);
+    const { id } = params;
 
     const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
         event.preventDefault();
-
-        // Verifica si todos los campos requeridos tienen valores
-        console.log("nombre: ", name);
-        console.log("peso: ", weight);
-        console.log("precio: ", price);
-        console.log("descripcion: ", description);
-        console.log("corte: ", idCut);
-        console.log("nombre: ", name);
-
 
         const formData = new FormData();
         formData.append('name', name);
@@ -50,27 +38,29 @@ const UpdateProduct = ({ router, params }: UpdateProductProps) => {
             formData.append('image2', image2);
         }
         formData.append('id_cut', idCut || '');
+        formData.append('_method', 'PUT');
 
-        console.log("FormData:", formData);
+        formData.forEach((value, key) => {
+            console.log(key, value);
+        });
 
         try {
-            const response = await fetch(`${PRODUCT_ID_BASE_URL}${id}`, {
-                method: 'PUT',
+            const productsResponse = await fetch(`${PRODUCT_ID_BASE_URL}${id}`, {
+                method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                credentials: 'include',
                 body: formData,
             });
 
-            if (!response.ok) {
-                toast.error("Error al actualizar el producto");
-                const errorData = await response.json();
+            if (!productsResponse.ok) {
+                const errorData = await productsResponse.json();
+                toast.error(`Error: ${errorData.message}`);
                 throw new Error(errorData.message || 'Error al actualizar el producto');
             }
 
-            const data = await response.json();
+            const data = await productsResponse.json();
             console.log(data);
             toast.success("¡Producto actualizado correctamente!");
             router.push('/dashboard/admin/products');
@@ -79,6 +69,7 @@ const UpdateProduct = ({ router, params }: UpdateProductProps) => {
             setError(error.message || 'Ha ocurrido un error al intentar actualizar el producto.');
         }
     };
+
 
     return (
         <CardUpdateProduct
@@ -90,6 +81,7 @@ const UpdateProduct = ({ router, params }: UpdateProductProps) => {
             image={image}
             image2={image2}
             id_cut={idCut}
+            name_cut={nameCut}
             setName={setName}
             setDescription={setDescription}
             setPrice={setPrice}
@@ -97,6 +89,7 @@ const UpdateProduct = ({ router, params }: UpdateProductProps) => {
             setImage={setImage}
             setImage2={setImage2}
             setIdCut={setIdCut}
+            setNameIdCut={setNameIdCut}
             error={error}
             productId={id}
         />

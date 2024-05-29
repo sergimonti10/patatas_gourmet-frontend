@@ -162,10 +162,10 @@ export default function ProductTable() {
                             Descripción {sortDescriptor.column === 'description' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
                         </TableColumn>
                         <TableColumn onClick={() => handleSortChange('price')} className='cursor-pointer text-md'>
-                            Precio {sortDescriptor.column === 'price' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
+                            Precio/€ {sortDescriptor.column === 'price' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
                         </TableColumn>
                         <TableColumn onClick={() => handleSortChange('weight')} className='cursor-pointer text-md'>
-                            Peso {sortDescriptor.column === 'weight' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
+                            Peso/kg {sortDescriptor.column === 'weight' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
                         </TableColumn>
 
                         <TableColumn className='text-md text-center'>
