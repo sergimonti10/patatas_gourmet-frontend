@@ -6,15 +6,6 @@ import { Suspense, useEffect } from "react";
 import useUserStore from "../../../../store/authStore";
 
 export default function StorePage() {
-
-    const { user } = useUserStore();
-
-    // useEffect(() => {
-    //     if (!user) {
-    //         window.location.href = '/';      Esto no va a hacer falta, alomejor en las paginas de edicion y creacion y en el navbar y sidenav
-    //     }
-    // }, [user]);
-
     return (
         <div className="w-auto h-auto">
             <Suspense fallback={<LoadingWave />}>

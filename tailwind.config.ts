@@ -31,7 +31,10 @@ const config: Config = {
           '900': '#0029ff',
           '950': '#0012ff',
         }
-      }
+      },
+      boxShadow: {
+        'glow-amber': '0 0 10px 2px rgba(255, 236, 217, 0.7)',
+      },
     },
   },
   variants: {

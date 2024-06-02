@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Input, Select, SelectItem } from "@nextui-org/react";
-import { CUTS_BASE_URL, PRODUCTS_BASE_URL, IMAGE_PRODUCTS_BASE_URL } from '@/services/links';
+import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import { CUTS_BASE_URL, PRODUCTS_BASE_URL, PRODUCT_ID_BASE_URL, IMAGE_PRODUCTS_BASE_URL } from '@/services/links';
 import useUserStore from '../../../../store/authStore';
 
 interface Cut {
@@ -37,6 +37,8 @@ const CardUpdateProduct: React.FC<CardProps> = ({
     const [cuts, setCuts] = useState<Cut[]>([]);
     const { token } = useUserStore();
     const [productImages, setProductImages] = useState({ image: '', image2: '' });
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [selectedImage2, setSelectedImage2] = useState<string | null>(null);
 
     useEffect(() => {
         fetch(CUTS_BASE_URL, {
@@ -50,7 +52,7 @@ const CardUpdateProduct: React.FC<CardProps> = ({
     }, [token]);
 
     useEffect(() => {
-        fetch(`${PRODUCTS_BASE_URL}/${productId}`, {
+        fetch(`${PRODUCT_ID_BASE_URL}${productId}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -71,9 +73,21 @@ const CardUpdateProduct: React.FC<CardProps> = ({
             .catch(error => console.error('Error fetching product:', error));
     }, [productId, token, setName, setDescription, setPrice, setWeight, setIdCut]);
 
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, setImageFunction: (image: File | null) => void, setSelectedImageFunction: (image: string | null) => void) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setImageFunction(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setSelectedImageFunction(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     return (
         <div className='h-full w-full flex justify-center items-center'>
-            <div className="bg-slate-100 p-3 sm:p-6 w-full max-w-md rounded-xl shadow-md bg-opacity-80 hover:shadow-lg transform transition duration-300 hover:scale-105">
+            <div className="bg-slate-100 p-3 sm:p-6 w-full max-w-md rounded-xl shadow-md bg-opacity-80 hover:shadow-lg transform transition duration-300 hover:scale-105 overflow-auto">
                 <form onSubmit={handleSubmit} className="my-5">
                     <p className='text-2xl text-center my-3 md:text-3xl lg:my-5'>Actualizar Producto</p>
                     <div className='grid grid-cols-1 gap-4'>
@@ -129,14 +143,16 @@ const CardUpdateProduct: React.FC<CardProps> = ({
                             <input
                                 type="file"
                                 id="image"
-                                onChange={(e) => {
-                                    if (e.target.files && e.target.files[0]) {
-                                        setImage(e.target.files[0]);
-                                    }
-                                }}
-                                className="w-full shadow-md rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-amber-700 focus:shadow-amber-700 focus:ring-opacity-50"
+                                onChange={(e) => handleImageChange(e, setImage, setSelectedImage)}
+                                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-amber-100 file:text-amber-950 hover:file:bg-amber-200"
                             />
                         </div>
+                        {selectedImage && (
+                            <div className='text-start mt-4'>
+                                <p className='text-lg'>Imagen seleccionada</p>
+                                <img src={selectedImage} alt="Imagen seleccionada" className="h-20 w-20 rounded-xl mb-2" />
+                            </div>
+                        )}
                         <div className='text-lg md:text-xl'>
                             <label htmlFor="image2">Imagen 2</label>
                             {productImages.image2 && (
@@ -145,18 +161,20 @@ const CardUpdateProduct: React.FC<CardProps> = ({
                             <input
                                 type="file"
                                 id="image2"
-                                onChange={(e) => {
-                                    if (e.target.files && e.target.files[0]) {
-                                        setImage2(e.target.files[0]);
-                                    }
-                                }}
-                                className="w-full shadow-md rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-amber-700 focus:shadow-amber-700 focus:ring-opacity-50"
+                                onChange={(e) => handleImageChange(e, setImage2, setSelectedImage2)}
+                                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-amber-100 file:text-amber-950 hover:file:bg-amber-200"
                             />
                         </div>
+                        {selectedImage2 && (
+                            <div className='text-start mt-4'>
+                                <p className='text-lg'>Imagen seleccionada</p>
+                                <img src={selectedImage2} alt="Imagen seleccionada" className="h-20 w-20 rounded-xl mb-2" />
+                            </div>
+                        )}
                         <div className="text-lg md:text-xl">
                             <label htmlFor="id_cut">Tipo de Corte</label>
                             <Select
-                                label={name_cut}
+                                label={name_cut || 'Seleccione un corte'}
                                 className="max-w-xs"
                                 name="id_cut"
                                 id="id_cut"
@@ -172,18 +190,18 @@ const CardUpdateProduct: React.FC<CardProps> = ({
                         </div>
                     </div>
                     {error && <div className="text-red-700 grid font-bold place-content-center my-6">{error}</div>}
-                    <div className='grid place-content-center'>
-                        <button
-                            type="submit"
-                            className="hover:from-amber-700 hover:to-amber-900 bg-gradient-to-t from-amber-600 to-amber-700 shadow-md transition-all active:scale-95 text-white font-bold py-2 mt-4 px-4 rounded-md"
+                    <div className='mt-8 grid place-content-center'>
+                        <Button
+                            type='submit'
+                            radius="full"
+                            className="bg-gradient-to-tr from-amber-600 to-yellow-400 text-white shadow-lg"
                         >
                             Actualizar Producto
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>
         </div>
     );
 };
-
 export default CardUpdateProduct;

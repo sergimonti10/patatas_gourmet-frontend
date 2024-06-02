@@ -7,6 +7,9 @@ export type Product = {
   image: string;
   image2: string;
   id_cut: number;
+  cut?: {
+    name: string;
+  };
 }
 
 export type User = {
@@ -24,4 +27,12 @@ export type User = {
   phone: string;
   email: string;
   password: string;
+  role: string;
+}
+
+export type Cut = {
+  id: number;
+  name: string;
+  description: string;
+  weight: number;
 }

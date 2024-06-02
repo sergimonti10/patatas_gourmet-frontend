@@ -1,20 +1,20 @@
 import React from "react";
 import Head from "next/head";
-import SideNav from "../components/dashboardComponents/sidenav";
+import NavBar from "../components/dashboardComponents/navbar";
 import { fontClasses } from "../components/fonts";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <>
             <Head>
-                <title>My App</title>
+                <title>Patatas Gourmet</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
             </Head>
-            <div className="w-screen h-screen grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6">
-                <div className="col-span-1 md:col-span-1 lg:col-span-1 text-white">
-                    <SideNav />
+            <div className="flex flex-col h-screen w-screen overflow-x-hidden relative">
+                <div className={`w-full fixed top-0 z-10 ${fontClasses["font-pinyon"]} rounded-b-lg`}>
+                    <NavBar />
                 </div>
-                <div className={`flex w-full justify-center col-span-3 lg:col-span-5 p-6 md:overflow-y-auto md:p-12 text-amber-950 ${fontClasses["font-unna"]}`}>
+                <div className={`w-full p-6 text-amber-950 ${fontClasses["font-unna"]} mt-20 relative z-0`}>
                     {children}
                 </div>
             </div>

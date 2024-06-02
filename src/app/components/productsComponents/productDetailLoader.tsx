@@ -49,7 +49,7 @@ const ProductDetailLoader = ({ params }: ProductDetailProps) => {
     return (
         <div className="container mx-auto p-4 max-w-screen-lg">
             <h1 className="text-3xl font-bold mb-4">{product?.name}</h1>
-            <div className="relative m-5 w-full h-auto mb-4 group">
+            <div className="relative m-5 w-1/2 h-auto mb-4 group">
                 <div className="relative overflow-hidden shadow-lg rounded-lg transition-all duration-300 ease-in-out group-hover:perspective-1000">
                     <img
                         src={`${IMAGE_PRODUCTS_BASE_URL}${product?.image}`}
@@ -67,6 +67,7 @@ const ProductDetailLoader = ({ params }: ProductDetailProps) => {
             <p className='text-xl my-4 font-bold border rounded-md p-4'>{product?.description}</p>
             <p className="text-xl mb-2 font-bold border rounded-md p-4">Precio: {product?.price} €</p>
             <p className="text-xl mb-2 font-bold border rounded-md p-4">Peso: {product?.weight} kg</p>
+            <p className="text-xl mb-2 font-bold border rounded-md p-4">Tipo de corte: {product?.cut?.name}</p>
         </div>
     );
 };

@@ -16,7 +16,7 @@ export default function RootLayout({
 
   return (
     <html lang="es">
-      <body className={`${roboto.className} antialiased bg-slate-50`}>
+      <body className={`${roboto.className} antialiased`}>
         <Providers>
           <ToastContainer />
           {children}

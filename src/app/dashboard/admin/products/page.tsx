@@ -76,8 +76,8 @@ export default function ProductTable() {
     const sortedItems = useMemo(() => {
         const sorted = [...filteredItems];
         sorted.sort((a, b) => {
-            const first = a[sortDescriptor.column as keyof Product];
-            const second = b[sortDescriptor.column as keyof Product];
+            const first = a[sortDescriptor.column as keyof Product] ?? '';
+            const second = b[sortDescriptor.column as keyof Product] ?? '';
             if (first < second) return sortDescriptor.direction === "ascending" ? -1 : 1;
             if (first > second) return sortDescriptor.direction === "ascending" ? 1 : -1;
             return 0;
@@ -136,7 +136,8 @@ export default function ProductTable() {
     };
 
     return (
-        <div>
+        <div className="w-full flex flex-col items-center justify-center m-5 p-4">
+            <h1 className="text-4xl font-bold mb-20">Panel de Productos</h1>
             <Input
                 isClearable
                 classNames={{
@@ -151,7 +152,7 @@ export default function ProductTable() {
                 onClear={() => setFilterValue("")}
                 onChange={handleSearchChange}
             />
-            <div style={{ overflowX: 'auto' }}>
+            <div className="w-full overflow-auto">
                 <Table>
                     <TableHeader>
                         <TableColumn className='text-md'>Imagen</TableColumn>
@@ -167,10 +168,10 @@ export default function ProductTable() {
                         <TableColumn onClick={() => handleSortChange('weight')} className='cursor-pointer text-md'>
                             Peso/kg {sortDescriptor.column === 'weight' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
                         </TableColumn>
-
-                        <TableColumn className='text-md text-center'>
-                            Acciones
+                        <TableColumn className='text-md'>
+                            Tipo de Corte
                         </TableColumn>
+                        <TableColumn className='text-md text-center'>Acciones</TableColumn>
                     </TableHeader>
                     <TableBody>
                         {paginatedItems.map((product) => (
@@ -186,6 +187,7 @@ export default function ProductTable() {
                                 <TableCell className="hover:bg-gray-100 text-sm">{product.description}</TableCell>
                                 <TableCell className="hover:bg-gray-100 text-sm">{product.price}</TableCell>
                                 <TableCell className="hover:bg-gray-100 text-sm">{product.weight}</TableCell>
+                                <TableCell className="hover:bg-gray-100 text-sm">{product.cut ? product.cut.name : 'N/A'}</TableCell>
                                 <TableCell className="hover:bg-gray-100">
                                     <div className="flex gap-2">
                                         <Button isIconOnly radius="full" size="sm" variant="light" onClick={() => editProduct(product.id)}>
@@ -238,6 +240,8 @@ export default function ProductTable() {
                     cursor: "bg-foreground text-background",
                 }}
                 showControls
+                showShadow
+                className="py-4"
             />
         </div>
     );

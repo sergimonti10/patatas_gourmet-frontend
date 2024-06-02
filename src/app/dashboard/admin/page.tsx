@@ -4,7 +4,7 @@ import React from "react";
 
 export default function AdminPage() {
     return (
-        <div className="flex flex-col items-center justify-center h-full m-5 p-4">
+        <div className="flex flex-col items-center justify-center m-5 p-4">
             <h1 className="text-4xl font-bold mb-20">Panel de Administrador</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <AdminCardPlus title="Productos" src="/images/products.jpg" href1="/dashboard/admin/products" href2="/dashboard/admin/newProduct" />
