@@ -1,119 +1,146 @@
 'use client'
 
-import { Card, Image, Button } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { Accordion, AccordionItem, Card, CardHeader, Image } from "@nextui-org/react";
+import { useInView } from 'react-intersection-observer';
 
 export default function DashboardPage() {
-    const [visibleSections, setVisibleSections] = useState<Set<number>>(new Set());
-
-    const handleScroll = () => {
-        const sections = document.querySelectorAll(".scroll-section");
-        const visibleSectionsSet = new Set<number>();
-
-        sections.forEach((section, index) => {
-            const rect = section.getBoundingClientRect();
-            if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
-                visibleSectionsSet.add(index);
-            }
-        });
-
-        setVisibleSections(visibleSectionsSet);
-    };
-
-    useEffect(() => {
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
-    const sections = [
-        {
-            title: "Bienvenido a Nuestra Tienda de Patatas",
-            text: "Ofrecemos patatas cortadas y envasadas al vacío de la mejor calidad. Disfruta de nuestras variedades: tradicional, gajo, brava y rodaja.",
-            image: "/images/storefront.jpg"
-        },
-        {
-            title: "Nuestros Productos",
-            text: "Cada corte de patata tiene su propio encanto y es perfecto para diferentes ocasiones. Ya sea una cena familiar o una fiesta con amigos, nuestras patatas son la elección ideal.",
-            image: "/images/products.jpg"
-        },
-        {
-            title: "Calidad y Sanidad",
-            text: "Nos tomamos muy en serio la calidad y la sanidad de nuestros productos. Todas nuestras patatas son cuidadosamente seleccionadas y procesadas para garantizar que recibas solo lo mejor.",
-            image: "/images/quality.jpg"
-        },
-        {
-            title: "Transporte Seguro",
-            text: "Nos aseguramos de que tus pedidos lleguen a tiempo y en perfectas condiciones. Utilizamos métodos de transporte seguro y empaques que preservan la frescura.",
-            image: "/images/transport.jpg"
-        },
-        {
-            title: "Nuestro Equipo",
-            text: "Nuestro equipo está formado por profesionales dedicados que trabajan incansablemente para ofrecerte el mejor servicio y producto posible.",
-            image: "/images/team.jpg"
-        }
-    ];
+    const { ref: ref1, inView: inView1 } = useInView({ triggerOnce: true });
+    const { ref: ref2, inView: inView2 } = useInView({ triggerOnce: true });
+    const { ref: ref3, inView: inView3 } = useInView({ triggerOnce: true });
+    const { ref: ref4, inView: inView4 } = useInView({ triggerOnce: true });
+    const { ref: ref5, inView: inView5 } = useInView({ triggerOnce: true });
+    const { ref: ref6, inView: inView6 } = useInView({ triggerOnce: true });
+    const { ref: ref7, inView: inView7 } = useInView({ triggerOnce: true });
 
     return (
-        <div className="container mx-auto p-4">
-            <div className="text-center my-8">
-                <h1 className="text-4xl text-gray-800">Tienda de Patatas Online</h1>
-                <p className="text-gray-600">Cortadas y Envasadas al Vacío</p>
-            </div>
-
-            <div className="carousel-container my-8">
-                <div className="carousel">
-                    {sections.map((section, index) => (
-                        <div key={index} className="carousel-item">
-                            <Image src={section.image} alt={section.title} />
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {sections.map((section, index) => (
-                <div
-                    key={index}
-                    className={`scroll-section transition-opacity duration-500 ${visibleSections.has(index) ? "opacity-100" : "opacity-0"
-                        } my-8`}
-                >
-                    <Card className="flex flex-col md:flex-row items-center">
-                        <Image src={section.image} alt={section.title} className="w-full md:w-1/2" />
-                        <div className="p-4 md:w-1/2">
-                            <h2 className="text-2xl text-gray-800">{section.title}</h2>
-                            <p className="text-gray-600">{section.text}</p>
-                        </div>
+        <>
+            <section className="flex justify-center items-center w-full">
+                <div className="max-w-[1500px] w-full">
+                    <Card className="relative">
+                        <div className="absolute w-full h-1/5 bg-gradient-to-b from-black to-transparent z-10"></div>
+                        <div className="absolute h-full w-1/3 bg-gradient-to-r from-black to-transparent z-10"></div>
+                        <CardHeader className="absolute z-10 top-1 flex-col !items-start max-w-[33%]">
+                            <p className="md:text-2xl lg:text-3xl xl:text-4xl text-white/60 font-bold">Patatas Gourmet<span className="hidden sm:block">vuestra tienda de patatas online</span></p>
+                            <h4 className="text-white hidden md:text-2xl sm:block font-medium text-large">Las mejores patatas cortadas y envasadas al vacío</h4>
+                        </CardHeader>
+                        <Image
+                            removeWrapper
+                            alt="Patatas Gourmet"
+                            className="z-0 w-full h-full object-cover"
+                            src="images/dashboard.jpg"
+                        />
                     </Card>
                 </div>
-            ))}
+            </section>
 
-            <div className="text-center my-8">
-                <h2 className="text-3xl text-gray-800">Únete a Nuestro Equipo</h2>
-                <p className="text-gray-600">Estamos en constante búsqueda de talento. Si te apasionan las patatas y quieres formar parte de nuestro equipo, contáctanos.</p>
-                <Button color="primary" className="mt-4">Contáctanos</Button>
-            </div>
+            <section className="flex justify-center items-center w-full my-10">
+                <div className="max-w-[1500px] w-full">
+                    <Accordion variant="splitted">
+                        <AccordionItem key="1" aria-label="Instalaciones" title="Instalaciones">
+                            <div ref={ref1} className={`flex flex-row items-center transition-opacity duration-1000 ${inView1 ? 'opacity-100' : 'opacity-0'}`}>
+                                <Image
+                                    removeWrapper
+                                    alt="Instalaciones"
+                                    src="images/instalaciones.jpg"
+                                    className="max-w-[300px] h-full object-cover"
+                                />
+                                <div className="w-1/2 p-4">
+                                    <p className="text-2xl font-bold lg:text-3xl">Instalaciones</p>
+                                    <p className="text-tiny text-black lg:text-base">Contamos con instalaciones de última generación para asegurar la mejor calidad en nuestros productos. Nuestro centro de producción está equipado con tecnología de punta que permite una manipulación higiénica y segura de las patatas. Desde el almacenamiento hasta el empaquetado, cada paso del proceso está diseñado para mantener la frescura y calidad de nuestros productos. Con áreas especializadas para cada tipo de corte – tradicional, gajo, brava y rodaja – garantizamos un procesamiento óptimo y eficiente. Además, nuestras instalaciones están certificadas por las más altas normas de calidad y seguridad alimentaria.</p>
+                                </div>
+                            </div>
+                        </AccordionItem>
 
-            <div className="text-center my-8">
-                <h2 className="text-3xl text-gray-800">Comentarios de Nuestros Clientes</h2>
-                <div className="carousel-container my-8">
-                    <div className="carousel">
-                        <div className="carousel-item">
-                            <Card className="p-4">
-                                <p className="text-gray-600">"Las mejores patatas que he probado. ¡Siempre frescas y deliciosas!" - Juan Pérez</p>
-                            </Card>
-                        </div>
-                        <div className="carousel-item">
-                            <Card className="p-4">
-                                <p className="text-gray-600">"El servicio es excelente y la calidad es inigualable." - María López</p>
-                            </Card>
-                        </div>
-                        <div className="carousel-item">
-                            <Card className="p-4">
-                                <p className="text-gray-600">"Me encanta la variedad de cortes que ofrecen. Perfecto para cualquier ocasión." - Carlos Sánchez</p>
-                            </Card>
-                        </div>
-                    </div>
+                        <AccordionItem key="2" aria-label="Maquinaria" title="Maquinaria">
+                            <div ref={ref2} className={`flex flex-row items-center transition-opacity duration-1000 ${inView2 ? 'opacity-100' : 'opacity-0'}`}>
+                                <div className="w-1/2 p-4">
+                                    <p className="text-2xl font-bold lg:text-3xl">Maquinaria</p>
+                                    <p className="text-tiny text-black lg:text-base">Nuestra maquinaria está diseñada para procesar las patatas de manera eficiente y mantener su frescura. Utilizamos equipos de última tecnología que permiten un corte preciso y uniforme en todas nuestras variedades: tradicional, gajo, brava y rodaja. La maquinaria automatizada reduce el contacto manual, minimizando el riesgo de contaminación y asegurando que cada patata sea procesada en las mejores condiciones posibles. Nuestro compromiso con la innovación nos lleva a actualizar constantemente nuestro equipo para mejorar la eficiencia y la calidad del producto final. Esto nos permite ofrecer patatas perfectamente cortadas y listas para cocinar.</p>
+                                </div>
+                                <Image
+                                    removeWrapper
+                                    alt="Maquinaria"
+                                    src="images/maquinaria.jpg"
+                                    className="max-w-[300px] h-full object-cover"
+                                />
+                            </div>
+                        </AccordionItem>
+
+                        <AccordionItem key="3" aria-label="Limpieza" title="Limpieza">
+                            <div ref={ref3} className={`flex flex-row items-center transition-opacity duration-1000 ${inView3 ? 'opacity-100' : 'opacity-0'}`}>
+                                <Image
+                                    removeWrapper
+                                    alt="Limpieza"
+                                    src="images/limpieza.jpg"
+                                    className="max-w-[300px] h-full object-cover"
+                                />
+                                <div className="w-1/2 p-4">
+                                    <p className="text-2xl font-bold lg:text-3xl">Limpieza</p>
+                                    <p className="text-tiny text-black lg:text-base">Mantenemos los más altos estándares de limpieza en todas nuestras áreas de producción. Cada sección de nuestras instalaciones es limpiada y desinfectada regularmente para asegurar un ambiente libre de contaminantes. Nuestro personal está capacitado en prácticas de higiene y sigue estrictos protocolos para evitar cualquier tipo de contaminación cruzada. Utilizamos productos de limpieza de grado alimenticio y equipos de desinfección avanzados para mantener nuestros espacios en las mejores condiciones posibles. La limpieza es una prioridad en nuestra operación diaria, asegurando que nuestras patatas lleguen a su mesa en condiciones óptimas.</p>
+                                </div>
+                            </div>
+                        </AccordionItem>
+
+                        <AccordionItem key="4" aria-label="Personal Cualificado" title="Personal Cualificado">
+                            <div ref={ref4} className={`flex flex-row items-center transition-opacity duration-1000 ${inView4 ? 'opacity-100' : 'opacity-0'}`}>
+                                <div className="w-1/2 p-4">
+                                    <p className="text-2xl font-bold lg:text-3xl">Personal Cualificado</p>
+                                    <p className="text-tiny text-black lg:text-base">Contamos con un equipo de profesionales altamente capacitados y comprometidos con la calidad. Nuestro personal recibe formación continua en técnicas de manipulación de alimentos, seguridad y control de calidad. Cada miembro de nuestro equipo entiende la importancia de su papel en el proceso de producción y trabaja diligentemente para asegurar que cada lote de patatas cumpla con nuestros altos estándares. Desde nuestros técnicos de maquinaria hasta nuestro personal de limpieza, todos están dedicados a mantener la excelencia en cada etapa del proceso. Su experiencia y dedicación son fundamentales para el éxito de nuestra empresa.</p>
+                                </div>
+                                <Image
+                                    removeWrapper
+                                    alt="Personal Profesional"
+                                    src="images/personal.jpg"
+                                    className="max-w-[300px] h-full object-cover"
+                                />
+                            </div>
+                        </AccordionItem>
+
+                        <AccordionItem key="5" aria-label="Años de Experiencia" title="Años de Experiencia">
+                            <div ref={ref5} className={`flex flex-row items-center transition-opacity duration-1000 ${inView5 ? 'opacity-100' : 'opacity-0'}`}>
+                                <Image
+                                    removeWrapper
+                                    alt="Años de Experiencia"
+                                    src="images/tiempo.jpg"
+                                    className="max-w-[300px] h-full object-cover"
+                                />
+                                <div className="w-1/2 p-4">
+                                    <p className="text-2xl font-bold lg:text-3xl">Años de Experiencia</p>
+                                    <p className="text-tiny text-black lg:text-base">Tenemos más de 20 años de experiencia en la industria de las patatas, garantizando productos de la mejor calidad. A lo largo de las décadas, hemos perfeccionado nuestros métodos de producción y establecido relaciones sólidas con proveedores y clientes. Esta experiencia nos ha permitido innovar y adaptarnos a las cambiantes demandas del mercado, siempre manteniendo un firme compromiso con la calidad. Nuestra trayectoria es un testimonio de nuestra dedicación y capacidad para entregar productos que superan las expectativas. Con cada patata que procesamos, traemos a la mesa años de conocimiento y pasión por lo que hacemos.</p>
+                                </div>
+                            </div>
+                        </AccordionItem>
+
+                        <AccordionItem key="6" aria-label="Sobre Nosotros" title="Sobre Nosotros">
+                            <div ref={ref6} className={`transition-opacity duration-1000 ${inView6 ? 'opacity-100' : 'opacity-0'}`}>
+                                <div className="p-4">
+                                    <p className="text-2xl font-bold lg:text-3xl">Sobre Nosotros</p>
+                                    <p className="text-tiny text-black lg:text-base">Patatas Gourmet es una empresa dedicada a ofrecer los mejores productos de patata en el mercado. Nuestro compromiso es con la calidad y la satisfacción de nuestros clientes. Nuestra filosofía de empresa se centra en la innovación constante, la mejora continua y la atención al detalle. Nuestra misión es proporcionar productos de alta calidad que enriquezcan la experiencia culinaria de nuestros clientes. Nuestra visión es ser líderes en el mercado de patatas gourmet, reconocidos por nuestra calidad y servicio excepcional. Nuestra oferta incluye patatas cortadas en cuatro variedades: tradicional, gajo, brava y rodaja, todas envasadas al vacío para garantizar su frescura.</p>
+                                    <p className="text-tiny text-black lg:text-base">Nuestra historia comienza hace más de dos décadas, cuando nuestro fundador, Juan Pérez, decidió llevar su pasión por las patatas a un nuevo nivel. Con un equipo pequeño pero dedicado, empezamos a ganar reconocimiento por la calidad de nuestros productos. Hoy en día, seguimos siendo una empresa familiar con un enfoque en la calidad y la innovación.</p>
+                                    <p className="text-tiny text-black lg:text-base">Nuestro equipo está compuesto por profesionales dedicados como María Gómez, nuestra jefa de producción, y Pedro Sánchez, nuestro experto en calidad. Cada miembro del equipo juega un papel crucial en nuestro éxito y comparte nuestro compromiso con la excelencia.</p>
+                                    <p className="text-tiny text-black lg:text-base">Razones para confiar en nosotros incluyen nuestra larga trayectoria, nuestro compromiso con la calidad, y nuestras instalaciones y maquinaria de última generación. Estamos dedicados a proporcionar productos que no solo cumplen, sino que superan las expectativas de nuestros clientes. La satisfacción del cliente es nuestra máxima prioridad, y trabajamos incansablemente para asegurar que cada pedido sea perfecto.</p>
+                                </div>
+                            </div>
+                        </AccordionItem>
+
+                        <AccordionItem key="7" aria-label="Contacto" title="Contacto">
+                            <div ref={ref7} className={`transition-opacity duration-1000 ${inView7 ? 'opacity-100' : 'opacity-0'}`}>
+                                <div className="p-4">
+                                    <p className="text-2xl font-bold lg:text-3xl">Contacto</p>
+                                    <p className="text-tiny text-black lg:text-base">Teléfono: 123-456-7890</p>
+                                    <p className="text-tiny text-black lg:text-base">Email: info@patatasgourmet.com</p>
+                                    <p className="text-tiny text-black lg:text-base">Dirección: Calle de las Patatas, 123, Ciudad, País</p>
+                                    <p className="text-tiny text-black lg:text-base">Síguenos en nuestras redes sociales:
+                                        <a href="https://facebook.com/patatasgourmet" className="ml-2">Facebook</a>,
+                                        <a href="https://twitter.com/patatasgourmet" className="ml-2">Twitter</a>,
+                                        <a href="https://instagram.com/patatasgourmet" className="ml-2">Instagram</a>.
+                                    </p>
+                                </div>
+                            </div>
+                        </AccordionItem>
+                    </Accordion>
                 </div>
-            </div>
-        </div>
+            </section>
+        </>
     );
 }
