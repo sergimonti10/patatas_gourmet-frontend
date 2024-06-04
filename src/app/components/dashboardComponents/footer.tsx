@@ -1,4 +1,4 @@
-import { Divider, Image } from "@nextui-org/react";
+import { Divider, Image, Link } from "@nextui-org/react";
 import { fontClasses } from "../fonts";
 
 export default function Footer() {
@@ -13,10 +13,10 @@ export default function Footer() {
                 <p className="text-amber-100 text-lg"><span className={`${fontClasses["font-pinyon"]} text-2xl`}>Patatas Gourmet </span> © 2024. Todos los derechos reservados.</p>
             </div>
             <div className="flex flex-col sm:flex-row text-amber-100 text-lg ml-4">
-                <a href="/dashboard/envios" className="mx-2 hover:underline">·Envíos</a>
-                <a href="/dashboard/aviso" className="mx-2 hover:underline">·Aviso legal</a>
-                <a href="/dashboard/privacidad" className="mx-2 hover:underline">·Política de privacidad</a>
-                <a href="/dashboard/cookies" className="mx-2 hover:underline">·Política de cookies</a>
+                <Link href="/dashboard/envios" className="mx-2 hover:underline">·Envíos</Link>
+                <Link href="/dashboard/aviso" className="mx-2 hover:underline">·Aviso legal</Link>
+                <Link href="/dashboard/privacidad" className="mx-2 hover:underline">·Política de privacidad</Link>
+                <Link href="/dashboard/cookies" className="mx-2 hover:underline">·Política de cookies</Link>
             </div>
         </footer >
     );
