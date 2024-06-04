@@ -2,6 +2,9 @@
 
 import { Accordion, AccordionItem, Card, CardHeader, Image } from "@nextui-org/react";
 import { useInView } from 'react-intersection-observer';
+import { FaXTwitter } from "react-icons/fa6";
+import { FaInstagram, FaFacebook } from "react-icons/fa";
+
 
 export default function DashboardPage() {
     const { ref: ref1, inView: inView1 } = useInView({ triggerOnce: true });
@@ -53,16 +56,16 @@ export default function DashboardPage() {
 
                         <AccordionItem key="2" aria-label="Maquinaria" title="Maquinaria">
                             <div ref={ref2} className={`flex flex-row items-center transition-opacity duration-1000 ${inView2 ? 'opacity-100' : 'opacity-0'}`}>
-                                <div className="w-1/2 p-4">
-                                    <p className="text-2xl font-bold lg:text-3xl">Maquinaria</p>
-                                    <p className="text-tiny text-black lg:text-base">Nuestra maquinaria está diseñada para procesar las patatas de manera eficiente y mantener su frescura. Utilizamos equipos de última tecnología que permiten un corte preciso y uniforme en todas nuestras variedades: tradicional, gajo, brava y rodaja. La maquinaria automatizada reduce el contacto manual, minimizando el riesgo de contaminación y asegurando que cada patata sea procesada en las mejores condiciones posibles. Nuestro compromiso con la innovación nos lleva a actualizar constantemente nuestro equipo para mejorar la eficiencia y la calidad del producto final. Esto nos permite ofrecer patatas perfectamente cortadas y listas para cocinar.</p>
-                                </div>
                                 <Image
                                     removeWrapper
                                     alt="Maquinaria"
                                     src="images/maquinaria.jpg"
                                     className="max-w-[300px] h-full object-cover"
                                 />
+                                <div className="w-1/2 p-4">
+                                    <p className="text-2xl font-bold lg:text-3xl">Maquinaria</p>
+                                    <p className="text-tiny text-black lg:text-base">Nuestra maquinaria está diseñada para procesar las patatas de manera eficiente y mantener su frescura. Utilizamos equipos de última tecnología que permiten un corte preciso y uniforme en todas nuestras variedades: tradicional, gajo, brava y rodaja. La maquinaria automatizada reduce el contacto manual, minimizando el riesgo de contaminación y asegurando que cada patata sea procesada en las mejores condiciones posibles. Nuestro compromiso con la innovación nos lleva a actualizar constantemente nuestro equipo para mejorar la eficiencia y la calidad del producto final. Esto nos permite ofrecer patatas perfectamente cortadas y listas para cocinar.</p>
+                                </div>
                             </div>
                         </AccordionItem>
 
@@ -83,16 +86,16 @@ export default function DashboardPage() {
 
                         <AccordionItem key="4" aria-label="Personal Cualificado" title="Personal Cualificado">
                             <div ref={ref4} className={`flex flex-row items-center transition-opacity duration-1000 ${inView4 ? 'opacity-100' : 'opacity-0'}`}>
-                                <div className="w-1/2 p-4">
-                                    <p className="text-2xl font-bold lg:text-3xl">Personal Cualificado</p>
-                                    <p className="text-tiny text-black lg:text-base">Contamos con un equipo de profesionales altamente capacitados y comprometidos con la calidad. Nuestro personal recibe formación continua en técnicas de manipulación de alimentos, seguridad y control de calidad. Cada miembro de nuestro equipo entiende la importancia de su papel en el proceso de producción y trabaja diligentemente para asegurar que cada lote de patatas cumpla con nuestros altos estándares. Desde nuestros técnicos de maquinaria hasta nuestro personal de limpieza, todos están dedicados a mantener la excelencia en cada etapa del proceso. Su experiencia y dedicación son fundamentales para el éxito de nuestra empresa.</p>
-                                </div>
                                 <Image
                                     removeWrapper
                                     alt="Personal Profesional"
                                     src="images/personal.jpg"
                                     className="max-w-[300px] h-full object-cover"
                                 />
+                                <div className="w-1/2 p-4">
+                                    <p className="text-2xl font-bold lg:text-3xl">Personal Cualificado</p>
+                                    <p className="text-tiny text-black lg:text-base">Contamos con un equipo de profesionales altamente capacitados y comprometidos con la calidad. Nuestro personal recibe formación continua en técnicas de manipulación de alimentos, seguridad y control de calidad. Cada miembro de nuestro equipo entiende la importancia de su papel en el proceso de producción y trabaja diligentemente para asegurar que cada lote de patatas cumpla con nuestros altos estándares. Desde nuestros técnicos de maquinaria hasta nuestro personal de limpieza, todos están dedicados a mantener la excelencia en cada etapa del proceso. Su experiencia y dedicación son fundamentales para el éxito de nuestra empresa.</p>
+                                </div>
                             </div>
                         </AccordionItem>
 
@@ -127,13 +130,13 @@ export default function DashboardPage() {
                             <div ref={ref7} className={`transition-opacity duration-1000 ${inView7 ? 'opacity-100' : 'opacity-0'}`}>
                                 <div className="p-4">
                                     <p className="text-2xl font-bold lg:text-3xl">Contacto</p>
-                                    <p className="text-tiny text-black lg:text-base">Teléfono: 123-456-7890</p>
-                                    <p className="text-tiny text-black lg:text-base">Email: info@patatasgourmet.com</p>
-                                    <p className="text-tiny text-black lg:text-base">Dirección: Calle de las Patatas, 123, Ciudad, País</p>
-                                    <p className="text-tiny text-black lg:text-base">Síguenos en nuestras redes sociales:
-                                        <a href="https://facebook.com/patatasgourmet" className="ml-2">Facebook</a>,
-                                        <a href="https://twitter.com/patatasgourmet" className="ml-2">Twitter</a>,
-                                        <a href="https://instagram.com/patatasgourmet" className="ml-2">Instagram</a>.
+                                    <p className="text-tiny text-black lg:text-base"><span className="text-lg">Teléfono</span>: 123456789</p>
+                                    <p className="text-tiny text-black lg:text-base"><span className="text-lg">Email</span>: info@patatasgourmet.com</p>
+                                    <p className="text-tiny text-black lg:text-base"><span className="text-lg">Dirección</span>: Calle del Comercio, 12, Benamejí, Córdoba, 14900</p>
+                                    <p className="text-tiny text-black lg:text-base">Síguenos en nuestras <span className="text-lg">redes sociales</span>:
+                                        <a href="https://facebook.com/patatasgourmet"><FaFacebook /></a>
+                                        <a href="https://twitter.com/patatasgourmet"><FaXTwitter /></a>
+                                        <a href="https://instagram.com/patatasgourmet"><FaInstagram /></a>
                                     </p>
                                 </div>
                             </div>
