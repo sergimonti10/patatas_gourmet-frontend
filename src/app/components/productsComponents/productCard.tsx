@@ -5,6 +5,7 @@ import { IMAGE_PRODUCTS_BASE_URL } from "@/services/links";
 import { Product, User } from "../../../services/definitions";
 import { FaCartPlus } from "react-icons/fa6";
 import Link from "next/link";
+import useCartStore from "../../../../store/cartStore";
 
 interface ProductCardProps {
     product: Product;
@@ -13,12 +14,14 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, user }: ProductCardProps) {
     const [isHovered, setIsHovered] = useState(false);
+    const { addToCart } = useCartStore();
 
     const handleButtonClick = () => {
         if (!user) {
             toast.warning("Debe registrarse para realizar una compra.");
         } else {
-            console.log(`Product purchased: ${product.name}`);
+            addToCart(product);
+            toast.success(`Producto añadido al carrito: ${product.name}`);
         }
     }
 

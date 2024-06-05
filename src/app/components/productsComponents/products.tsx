@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { fetchProducts } from "../../../services/data";
 import { Product } from "../../../services/definitions";
 import useUserStore from "../../../../store/authStore";
-import { IMAGE_USERS_BASE_URL } from "@/services/links";
 import { LoadingWave } from "../general/skeletons";
 import ProductCard from "./productCard";
 
