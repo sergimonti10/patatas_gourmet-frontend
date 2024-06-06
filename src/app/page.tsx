@@ -13,7 +13,7 @@ export default function Home() {
         <div className="absolute top-0 left-0 w-full h-1/5 bg-gradient-to-b from-white to-transparent z-10"></div>
         <header className="flex items-center py-4 w-full z-20">
           <div className="flex-grow flex justify-center">
-            <h1 className={`${fontClasses["font-pinyon"]} z-10 text-5xl md:text-7xl lg:text-9xl font-bold text-center text-amber-950`}>
+            <h1 className={`${fontClasses["font-pinyon"]} antialiased z-10 text-5xl md:text-7xl lg:text-9xl font-bold text-center text-amber-950`}>
               Patatas Gourmet
             </h1>
           </div>

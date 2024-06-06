@@ -19,6 +19,9 @@ export default function NavBar() {
     const pathname = usePathname();
     const { user, token, logout, role } = useUserStore();
     const cartCount = useCartStore(state => state.cart.length);
+    const { cart } = useCartStore();
+    const initializeCart = useCartStore(state => state.initializeCart);
+
     const initialLinks = [
         { name: 'Menú', href: '/dashboard', icon: IoMdHome },
         { name: 'Tienda', href: '/dashboard/store', icon: FaShop },
@@ -31,7 +34,10 @@ export default function NavBar() {
 
     useEffect(() => {
         setMounted(true);
-    }, []);
+        initializeCart();
+    }, [initializeCart]);
+
+    console.log("Contenido del carrito: ", cart);
 
     useEffect(() => {
         const fetchUser = async () => {

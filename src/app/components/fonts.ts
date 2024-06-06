@@ -5,12 +5,11 @@ import { Dancing_Script } from 'next/font/google';
 import { Caveat } from 'next/font/google';
 import { Parisienne } from 'next/font/google';
 import { Unna } from 'next/font/google';
-import { Pinyon_Script } from 'next/font/google';
 import { Satisfy } from 'next/font/google';
+import { Pinyon_Script } from 'next/font/google';
 
 
-
-export const pinyon = Pinyon_Script({ subsets: ['latin'], weight: '400' })
+export const pinyon_script = Pinyon_Script({ subsets: ['latin'], weight: '400' })
 export const parisienne = Parisienne({ subsets: ['latin'], weight: '400' })
 export const roboto = Roboto({ subsets: ['latin'], weight: '400' })
 export const josefin = Josefin_Sans({ subsets: ['latin'], weight: '400' })
@@ -21,7 +20,7 @@ export const unna = Unna({ subsets: ['latin'], weight: '400' })
 export const satisfy = Satisfy({ subsets: ['latin'], weight: '400' })
 
 export const fontClasses = {
-    'font-pinyon': pinyon.className,
+    'font-pinyon': pinyon_script.className,
     'font-parisienne': parisienne.className,
     'font-roboto': roboto.className,
     'font-josefin': josefin.className,

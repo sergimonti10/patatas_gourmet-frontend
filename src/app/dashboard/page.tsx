@@ -4,6 +4,7 @@ import { Accordion, AccordionItem, Card, CardHeader, Image } from "@nextui-org/r
 import { useInView } from 'react-intersection-observer';
 import { FaXTwitter } from "react-icons/fa6";
 import { FaInstagram, FaFacebook } from "react-icons/fa";
+import useUserStore from "../../../store/authStore";
 
 
 export default function DashboardPage() {
