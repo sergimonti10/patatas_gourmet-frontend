@@ -197,7 +197,7 @@ export default function NavBar() {
             <NavbarMenu className='text-amber-950'>
                 {links.map((link, index) => (
                     <NavbarMenuItem key={`${link.name}-${index}`}>
-                        <Link className={`w-full text-xl ${fontClasses['font-pinyon']}`} href={link.href} size="lg">
+                        <Link className={`w-full text-xl ${fontClasses['font-unna']}`} href={link.href} size="lg">
                             {link.name === 'Carrito' ? (
                                 <Badge
                                     content={cartCount}

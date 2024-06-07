@@ -28,6 +28,20 @@ const useCartStore = create((set) => ({
         });
     },
 
+    removeProductFromCart: (productId) => {
+        set((state) => {
+            const user = useUserStore.getState().user;
+            const productIndex = state.cart.findIndex(product => product.id === productId);
+            if (productIndex === -1) return { cart: state.cart };
+            const newCart = [
+                ...state.cart.slice(0, productIndex),
+                ...state.cart.slice(productIndex + 1)
+            ];
+            localStorage.setItem(`cart_${user.id}`, JSON.stringify(newCart));
+            return { cart: newCart };
+        });
+    },
+
     getCartCount: () => {
         const user = useUserStore.getState().user;
         const currentCart = JSON.parse(localStorage.getItem(`cart_${user.id}`)) || [];
@@ -39,28 +53,6 @@ const useCartStore = create((set) => ({
             const user = useUserStore.getState().user;
             localStorage.removeItem(`cart_${user.id}`);
             return { cart: [] };
-        });
-    },
-
-    incrementQuantity: (productId) => {
-        set((state) => {
-            const user = useUserStore.getState().user;
-            const newCart = state.cart.map((product) =>
-                product.id === productId ? { ...product, quantity: (product.quantity || 1) + 1 } : product
-            );
-            localStorage.setItem(`cart_${user.id}`, JSON.stringify(newCart));
-            return { cart: newCart };
-        });
-    },
-
-    decrementQuantity: (productId) => {
-        set((state) => {
-            const user = useUserStore.getState().user;
-            const newCart = state.cart.map((product) =>
-                product.id === productId && (product.quantity || 1) > 1 ? { ...product, quantity: (product.quantity || 1) - 1 } : product
-            );
-            localStorage.setItem(`cart_${user.id}`, JSON.stringify(newCart));
-            return { cart: newCart };
         });
     },
 }));
