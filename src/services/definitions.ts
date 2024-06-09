@@ -10,6 +10,10 @@ export type Product = {
   cut?: {
     name: string;
   };
+  pivot: {
+    quantity: number;
+    unit_price: number;
+  };
 }
 
 export type User = {
@@ -35,4 +39,16 @@ export type Cut = {
   name: string;
   description: string;
   weight: number;
+}
+
+export interface Order {
+  id: number;
+  date_order: string;
+  date_deliver?: string;
+  status: 'pendiente' | 'procesando' | 'reparto' | 'entregado' | 'cancelado';
+  total_price: number;
+  total_products: number;
+  id_user: number;
+  products: Product[];
+  user: User;
 }

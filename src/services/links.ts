@@ -6,3 +6,4 @@ export const CUTS_BASE_URL = 'http://127.0.0.1:8000/api/cuts';
 export const CUT_ID_BASE_URL = 'http://127.0.0.1:8000/api/cuts/';
 export const USERS_BASE_URL = 'http://127.0.0.1:8000/api/users';
 export const USER_ID_BASE_URL = 'http://127.0.0.1:8000/api/users/';
+export const ORDERS_BASE_URL = 'http://127.0.0.1:8000/api/orders';

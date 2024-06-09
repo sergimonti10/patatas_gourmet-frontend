@@ -41,7 +41,7 @@ export default function ProductTable() {
     const router = useRouter();
     const { token } = useUserStore();
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-    const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
+    const [isPopoverOpen, setIsPopoverOpen] = useState<number | null>(null);
 
     useEffect(() => {
         fetch(PRODUCTS_BASE_URL)
@@ -117,13 +117,13 @@ export default function ProductTable() {
 
     const confirmDelete = (product: Product) => {
         setSelectedProduct(product);
-        setIsPopoverOpen(true);
+        setIsPopoverOpen(product.id);
     };
 
     const handleDelete = () => {
         if (selectedProduct) {
             deleteProduct(selectedProduct.id);
-            setIsPopoverOpen(false);
+            setIsPopoverOpen(null);
         }
     };
 
@@ -206,22 +206,24 @@ export default function ProductTable() {
                                         </Button>
                                         <Button isIconOnly radius="full" size="sm" variant="light">
                                             <Tooltip content="Eliminar">
-                                                <Popover isOpen={isPopoverOpen} onClose={() => setIsPopoverOpen(false)} backdrop="blur">
-                                                    <PopoverTrigger>
-                                                        <span onClick={() => confirmDelete(product)} className="text-lg text-danger cursor-pointer active:opacity-50 active:scale-90 transition-all">
-                                                            <CiTrash className="text-red-700 h-4 w-4" />
-                                                        </span>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent className="w-[240px]">
-                                                        <div className="p-4">
-                                                            <p>¿Estás seguro de que quieres eliminar este producto?</p>
-                                                            <div className="flex justify-end mt-4">
-                                                                <Button onClick={() => setIsPopoverOpen(false)} variant="light" size="sm" className="mr-2 hover:shadow-lg hover:scale-110">Cancelar</Button>
-                                                                <Button onClick={handleDelete} className='text-red-600 hover:shadow-lg hover:scale-110'>Eliminar</Button>
+                                                <span>
+                                                    <Popover isOpen={isPopoverOpen === product.id} onClose={() => setIsPopoverOpen(null)} backdrop="blur">
+                                                        <PopoverTrigger>
+                                                            <span onClick={() => confirmDelete(product)} className="text-lg text-danger cursor-pointer active:opacity-50 active:scale-90 transition-all">
+                                                                <CiTrash className="text-red-700 h-4 w-4" />
+                                                            </span>
+                                                        </PopoverTrigger>
+                                                        <PopoverContent className="w-[240px]">
+                                                            <div className="p-4">
+                                                                <p>¿Estás seguro de que quieres eliminar este producto?</p>
+                                                                <div className="flex justify-end mt-4">
+                                                                    <Button onClick={() => setIsPopoverOpen(null)} variant="flat">Cancelar</Button>
+                                                                    <Button onClick={handleDelete} color='danger'>Eliminar</Button>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </PopoverContent>
-                                                </Popover>
+                                                        </PopoverContent>
+                                                    </Popover>
+                                                </span>
                                             </Tooltip>
                                         </Button>
                                     </div>

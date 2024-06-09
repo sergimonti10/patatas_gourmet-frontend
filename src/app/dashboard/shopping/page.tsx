@@ -5,13 +5,20 @@ import { Card, CardBody, Avatar, Button, Divider } from '@nextui-org/react';
 import useCartStore from '../../../../store/cartStore';
 import { FaTrashAlt } from 'react-icons/fa';
 import { Product } from '@/services/definitions';
-import { IMAGE_PRODUCTS_BASE_URL } from '@/services/links';
+import { IMAGE_PRODUCTS_BASE_URL, ORDERS_BASE_URL } from '@/services/links';
 import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
 import { toast } from 'react-toastify';
+import useUserStore from '../../../../store/authStore';
 
 interface GroupedProduct {
     product: Product;
     quantity: number;
+}
+
+interface CartProduct {
+    id: number;
+    quantity: number;
+    unit_price: number;
 }
 
 export default function CartPage() {
@@ -20,7 +27,7 @@ export default function CartPage() {
     const clearCart = useCartStore((state) => state.clearCart);
     const { addToCart, removeProductFromCart } = useCartStore();
     const initializeCart = useCartStore((state) => state.initializeCart);
-
+    const { user, token } = useUserStore();
     const [showPaymentForm, setShowPaymentForm] = useState(false);
     const [cardNumber, setCardNumber] = useState('');
     const [expiryDate, setExpiryDate] = useState('');
@@ -56,12 +63,68 @@ export default function CartPage() {
         setShowPaymentForm(true);
     };
 
-    const handleConfirmPurchase = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        toast.success('Compra realizada con éxito');
-        setShowPaymentForm(false);
-        clearCart();
+    const toMySQLDateFormat = (date: Date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     };
+
+    const handleConfirmPurchase = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const groupedProducts = cart.reduce((acc: { [key: number]: CartProduct }, item: Product) => {
+            if (acc[item.id]) {
+                acc[item.id].quantity += 1;
+            } else {
+                acc[item.id] = {
+                    id: item.id,
+                    quantity: 1,
+                    unit_price: parseFloat(item.price.toString())
+                };
+            }
+            return acc;
+        }, {});
+
+        const orderData = {
+            date_order: toMySQLDateFormat(new Date()),
+            status: 'pendiente',
+            total_price: getTotalPrice(),
+            total_products: cart.length,
+            id_user: user.id,
+            products: Object.values(groupedProducts)
+        };
+
+        console.log('Order Data:', orderData);
+
+        try {
+            const response = await fetch(ORDERS_BASE_URL, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+
+                },
+                body: JSON.stringify(orderData),
+            });
+
+            if (response.ok) {
+                toast.success('Compra realizada con éxito');
+                setShowPaymentForm(false);
+                clearCart();
+            } else {
+                toast.error('Error al realizar la compra');
+            }
+        } catch (error) {
+            toast.error('Error al realizar la compra');
+        }
+    };
+
+
 
     return (
         <div className="container mx-auto p-2 overflow-auto">

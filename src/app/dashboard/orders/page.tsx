@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import React, { Key, useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import {
     Table,
     TableHeader,
@@ -10,337 +10,260 @@ import {
     TableCell,
     Input,
     Button,
-    DropdownTrigger,
-    Dropdown,
-    DropdownMenu,
-    DropdownItem,
-    Chip,
-    User,
     Pagination,
-    Selection,
-    ChipProps,
-    SortDescriptor
+    SortDescriptor,
+    useDisclosure,
+    Divider,
+    Card,
+    CardHeader,
+    CardBody,
+    Avatar,
 } from "@nextui-org/react";
-import { GoPlus } from "react-icons/go";
-import { IoEllipsisVerticalSharp } from "react-icons/io5";
-import { GoChevronDown } from "react-icons/go";
 import { CiSearch } from "react-icons/ci";
-import { columns, users, statusOptions } from "./data";
-import { capitalize } from "./utils";
-import { IMAGE_PRODUCTS_BASE_URL, PRODUCTS_BASE_URL } from "@/services/links";
-import { Product } from "@/services/definitions";
+import { FaSortUp, FaSortDown } from "react-icons/fa";
+import { useRouter } from 'next/navigation';
+import { Order } from '@/services/definitions';
+import { IMAGE_PRODUCTS_BASE_URL, IMAGE_USERS_BASE_URL, ORDERS_BASE_URL } from '@/services/links';
+import useUserStore from '../../../../store/authStore';
+import { toast } from 'react-toastify';
+import { Modal, ModalContent, ModalHeader, ModalBody } from "@nextui-org/react";
 
-const statusColorMap: Record<string, ChipProps["color"]> = {
-    active: "success",
-    paused: "danger",
-    vacation: "warning",
-};
-
-const INITIAL_VISIBLE_COLUMNS = ["name", "role", "status", "actions"];
-
-type User = typeof users[0];
-
-export default function tableProducts() {
-    const [products, setProducts] = useState<Product[]>([]);
-    const [filterValue, setFilterValue] = useState("");
-    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
-    const [visibleColumns, setVisibleColumns] = useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS));
-    const [statusFilter, setStatusFilter] = useState<Selection>("all");
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+export default function OrdersTable() {
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [filterValue, setFilterValue] = useState<string>("");
+    const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+    const [page, setPage] = useState<number>(1);
     const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-        column: "age",
-        direction: "ascending",
+        column: "date_order",
+        direction: "descending",
     });
-    const [page, setPage] = useState(1);
+    const { token } = useUserStore();
+    const router = useRouter();
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     useEffect(() => {
-        fetch(PRODUCTS_BASE_URL)
+        fetch(ORDERS_BASE_URL, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        })
             .then(response => response.json())
-            .then(data => setProducts(data))
-            .catch(error => console.error('Error fetching products:', error));
-    }, []);
+            .then(data => {
+                console.log('Orders fetched:', data);
+                setOrders(data);
+            })
+            .catch(error => console.error('Error fetching orders:', error));
+    }, [token]);
 
-    const pages = Math.ceil(users.length / rowsPerPage);
-
-    const hasSearchFilter = Boolean(filterValue);
-
-    const headerColumns = useMemo(() => {
-        if (visibleColumns === "all") return columns;
-
-        return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
-    }, [visibleColumns]);
+    const handleSortChange = (column: keyof Order) => {
+        setSortDescriptor(prev => {
+            if (prev.column === column) {
+                return {
+                    column,
+                    direction: prev.direction === "ascending" ? "descending" : "ascending",
+                };
+            } else {
+                return {
+                    column,
+                    direction: "ascending",
+                };
+            }
+        });
+    };
 
     const filteredItems = useMemo(() => {
-        let filteredProducts = [...products];
-
-        if (hasSearchFilter) {
-            filteredProducts = filteredProducts.filter((product) =>
-                product.name.toLowerCase().includes(filterValue.toLowerCase()),
-            );
-        }
-
-        return filteredProducts;
-    }, [products, filterValue]);
-
-    const items = useMemo(() => {
-        const start = (page - 1) * rowsPerPage;
-        const end = start + rowsPerPage;
-
-        return filteredItems.slice(start, end);
-    }, [page, filteredItems, rowsPerPage]);
+        if (!filterValue) return orders;
+        return orders.filter(order =>
+            order.id.toString().includes(filterValue) ||
+            order.status.toLowerCase().includes(filterValue.toLowerCase())
+        );
+    }, [orders, filterValue]);
 
     const sortedItems = useMemo(() => {
-        return [...items].sort((a, b) => {
-            const first = a[sortDescriptor.column as keyof Product] as number;
-            const second = b[sortDescriptor.column as keyof Product] as number;
-            const cmp = first < second ? -1 : first > second ? 1 : 0;
-
-            return sortDescriptor.direction === "descending" ? -cmp : cmp;
+        const sorted = [...filteredItems];
+        sorted.sort((a, b) => {
+            const first = a[sortDescriptor.column as keyof Order] ?? '';
+            const second = b[sortDescriptor.column as keyof Order] ?? '';
+            if (first < second) return sortDescriptor.direction === "ascending" ? -1 : 1;
+            if (first > second) return sortDescriptor.direction === "ascending" ? 1 : -1;
+            return 0;
         });
-    }, [sortDescriptor, items]);
+        return sorted;
+    }, [filteredItems, sortDescriptor]);
 
-    const renderCell = useCallback((product: Product, columnKey: React.Key) => {
-        const cellValue = product[columnKey as keyof Product];
+    const paginatedItems = useMemo(() => {
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        return sortedItems.slice(start, end);
+    }, [sortedItems, page, rowsPerPage]);
 
-        switch (columnKey) {
-            case "name":
-                return (
-                    <User
-                        avatarProps={{ radius: "full", size: "sm", src: `${IMAGE_PRODUCTS_BASE_URL}${product.image}` }}
-                        classNames={{
-                            description: "text-default-500",
-                        }}
-                        description={product.description}
-                        name={cellValue}
-                    >
-                        {product.description}
-                    </User>
-                );
-            case "price":
-                return <p>{cellValue}</p>;
-            case "weight":
-                return <p>{cellValue}</p>;
-            case "id_cut":
-                return <p>{cellValue}</p>;
-            case "actions":
-                return (
-                    <div className="relative flex justify-end items-center gap-2">
-                        <Dropdown className="bg-background border-1 border-default-200">
-                            <DropdownTrigger>
-                                <Button isIconOnly radius="full" size="sm" variant="light">
-                                    <IoEllipsisVerticalSharp className="text-default-400" />
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu>
-                                <DropdownItem>View</DropdownItem>
-                                <DropdownItem>Edit</DropdownItem>
-                                <DropdownItem>Delete</DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown>
-                    </div>
-                );
-            default:
-                return cellValue;
-        }
-    }, []);
+    const totalPages = useMemo(() => Math.ceil(filteredItems.length / rowsPerPage), [filteredItems, rowsPerPage]);
 
-
-    const onRowsPerPageChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-        setRowsPerPage(Number(e.target.value));
+    const handleSearchChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        setFilterValue(event.target.value);
         setPage(1);
     }, []);
 
-    const onSearchChange = useCallback((value?: string) => {
-        if (value) {
-            setFilterValue(value);
-            setPage(1);
-        } else {
-            setFilterValue("");
+    const cancelOrder = async (orderId: number) => {
+        try {
+            await fetch(`${ORDERS_BASE_URL}/${orderId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            setOrders(prevOrders => prevOrders.filter(order => order.id !== orderId));
+            toast.success(`¡Pedido ${orderId} cancelado correctamente!`);
+        } catch (error) {
+            toast.error(`Error al cancelar el pedido ${orderId}`);
         }
-    }, []);
+    };
 
-    const topContent = useMemo(() => {
-        return (
-            <div className="flex flex-col gap-4">
-                <div className="flex justify-between gap-3 items-end">
-                    <Input
-                        isClearable
-                        classNames={{
-                            base: "w-full sm:max-w-[44%]",
-                            inputWrapper: "border-1",
-                        }}
-                        placeholder="Search by name..."
-                        size="sm"
-                        startContent={<CiSearch className="text-default-300" />}
-                        value={filterValue}
-                        variant="bordered"
-                        onClear={() => setFilterValue("")}
-                        onValueChange={onSearchChange}
-                    />
-                    <div className="flex gap-3">
-                        <Dropdown>
-                            <DropdownTrigger className="hidden sm:flex">
-                                <Button
-                                    endContent={<GoChevronDown className="text-small" />}
-                                    size="sm"
-                                    variant="flat"
-                                >
-                                    Status
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu
-                                disallowEmptySelection
-                                aria-label="Table Columns"
-                                closeOnSelect={false}
-                                selectedKeys={statusFilter}
-                                selectionMode="multiple"
-                                onSelectionChange={setStatusFilter}
-                            >
-                                {statusOptions.map((status) => (
-                                    <DropdownItem key={status.uid} className="capitalize">
-                                        {capitalize({ str: status.name })}
-                                    </DropdownItem>
-                                ))}
-                            </DropdownMenu>
-                        </Dropdown>
-                        <Dropdown>
-                            <DropdownTrigger className="hidden sm:flex">
-                                <Button
-                                    endContent={<GoChevronDown className="text-small" />}
-                                    size="sm"
-                                    variant="flat"
-                                >
-                                    Columns
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu
-                                disallowEmptySelection
-                                aria-label="Table Columns"
-                                closeOnSelect={false}
-                                selectedKeys={visibleColumns}
-                                selectionMode="multiple"
-                                onSelectionChange={setVisibleColumns}
-                            >
-                                {columns.map((column) => (
-                                    <DropdownItem key={column.uid} className="capitalize">
-                                        {capitalize({ str: column.name })}
-                                    </DropdownItem>
-                                ))}
-                            </DropdownMenu>
-                        </Dropdown>
-                        <Button
-                            className="bg-foreground text-background"
-                            endContent={<GoPlus />}
-                            size="sm"
-                        >
-                            Add New
-                        </Button>
-                    </div>
-                </div>
-                <div className="flex justify-between items-center">
-                    <span className="text-default-400 text-small">Total {products.length} productos</span>
-                    <label className="flex items-center text-default-400 text-small">
-                        Rows per page:
-                        <select
-                            className="bg-transparent outline-none text-default-400 text-small"
-                            onChange={onRowsPerPageChange}
-                        >
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                            <option value="15">15</option>
-                        </select>
-                    </label>
-                </div>
-            </div>
-        );
-    }, [
-        filterValue,
-        statusFilter,
-        visibleColumns,
-        onSearchChange,
-        onRowsPerPageChange,
-        users.length,
-        hasSearchFilter,
-    ]);
+    const openOrderDetails = async (orderId: number) => {
+        try {
+            const response = await fetch(`${ORDERS_BASE_URL}/${orderId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
 
-    const bottomContent = useMemo(() => {
-        return (
-            <div className="py-2 px-2 flex justify-between items-center">
-                <Pagination
-                    showControls
-                    classNames={{
-                        cursor: "bg-foreground text-background",
-                    }}
-                    color="default"
-                    isDisabled={hasSearchFilter}
-                    page={page}
-                    total={pages}
-                    variant="light"
-                    onChange={setPage}
-                />
-                <span className="text-small text-default-400">
-                    {selectedKeys === "all"
-                        ? "All items selected"
-                        : `${selectedKeys.size} of ${items.length} selected`}
-                </span>
-            </div>
-        );
-    }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
+            if (!response.ok) {
+                throw new Error('Error fetching order details');
+            }
 
-    const classNames = useMemo(
-        () => ({
-            wrapper: ["max-h-[382px]", "max-w-3xl"],
-            th: ["bg-transparent", "text-default-500", "border-b", "border-divider"],
-            td: [
-                "group-data-[first=true]:first:before:rounded-none",
-                "group-data-[first=true]:last:before:rounded-none",
-                "group-data-[middle=true]:before:rounded-none",
-                "group-data-[last=true]:first:before:rounded-none",
-                "group-data-[last=true]:last:before:rounded-none",
-            ],
-        }),
-        [],
-    );
+            const data = await response.json();
+            console.log(data);
+            setSelectedOrder(data);
+            onOpen();
+        } catch (error) {
+            console.error('Error fetching order details:', error);
+            toast.error('Error al obtener los detalles del pedido');
+        }
+    };
 
     return (
-        <Table
-            isCompact
-            removeWrapper
-            aria-label="Example table with custom cells, pagination and sorting"
-            bottomContent={bottomContent}
-            bottomContentPlacement="outside"
-            checkboxesProps={{
-                classNames: {
-                    wrapper: "after:bg-foreground after:text-background text-background",
-                },
-            }}
-            classNames={classNames}
-            selectedKeys={selectedKeys}
-            selectionMode="multiple"
-            sortDescriptor={sortDescriptor}
-            topContent={topContent}
-            topContentPlacement="outside"
-            onSelectionChange={setSelectedKeys}
-            onSortChange={setSortDescriptor}
-        >
-            <TableHeader columns={headerColumns}>
-                {(column) => (
-                    <TableColumn
-                        key={column.uid}
-                        align={column.uid === "actions" ? "center" : "start"}
-                        allowsSorting={column.sortable}
-                    >
-                        {column.name}
-                    </TableColumn>
-                )}
-            </TableHeader>
-            <TableBody emptyContent={"No se han encontrado productos"} items={sortedItems}>
-                {(item) => (
-                    <TableRow key={item.id}>
-                        {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
-                    </TableRow>
-                )}
-            </TableBody>
-        </Table>
+        <div className="w-full flex flex-col items-center justify-center m-5 p-4">
+            <h1 className="text-4xl font-bold mb-20">Panel de Pedidos</h1>
+            <Input
+                isClearable
+                classNames={{
+                    base: "w-full sm:max-w-[33%]",
+                    inputWrapper: "border-1",
+                }}
+                placeholder="Buscar por ID o estado..."
+                size="sm"
+                startContent={<CiSearch className="text-default-300" />}
+                value={filterValue}
+                variant="bordered"
+                onClear={() => setFilterValue("")}
+                onChange={handleSearchChange}
+            />
+            <div className="w-full overflow-auto">
+                <Table>
+                    <TableHeader>
+                        <TableColumn onClick={() => handleSortChange('id')} className='cursor-pointer text-md'>
+                            Número de Pedido {sortDescriptor.column === 'id' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
+                        </TableColumn>
+                        <TableColumn onClick={() => handleSortChange('date_order')} className='cursor-pointer text-md'>
+                            Fecha de Pedido {sortDescriptor.column === 'date_order' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
+                        </TableColumn>
+                        <TableColumn onClick={() => handleSortChange('date_deliver')} className='cursor-pointer text-md'>
+                            Fecha de Entrega {sortDescriptor.column === 'date_deliver' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
+                        </TableColumn>
+                        <TableColumn onClick={() => handleSortChange('status')} className='cursor-pointer text-md'>
+                            Estado {sortDescriptor.column === 'status' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
+                        </TableColumn>
+                        <TableColumn className='text-md text-center'>Acciones</TableColumn>
+                    </TableHeader>
+                    <TableBody>
+                        {paginatedItems.map((order) => (
+                            <TableRow className='cursor-pointer' key={order.id} onClick={() => openOrderDetails(order.id)}>
+                                <TableCell className="hover:bg-gray-100 text-sm">{order.id}</TableCell>
+                                <TableCell className="hover:bg-gray-100 text-sm">{order.date_order}</TableCell>
+                                <TableCell className="hover:bg-gray-100 text-sm">{order.date_deliver || 'N/A'}</TableCell>
+                                <TableCell className="hover:bg-gray-100 text-sm">{order.status}</TableCell>
+                                <TableCell className="hover:bg-gray-100 text-center">
+                                    <Button color='danger' size="sm" onClick={(e) => { e.stopPropagation(); cancelOrder(order.id); }}>Cancelar</Button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
+            <Pagination
+                total={totalPages}
+                initialPage={1}
+                page={page}
+                onChange={setPage}
+                classNames={{
+                    cursor: "bg-foreground text-background",
+                }}
+                showControls
+                showShadow
+                className="py-4"
+            />
+
+            {selectedOrder && (
+                <Modal size="3xl" isOpen={isOpen} onClose={onClose} className="overflow-auto max-h-[80vh] bg-slate-100 text-amber-950">
+                    <ModalContent>
+                        {() => (
+                            <>
+                                <ModalHeader>
+                                    <h2>Detalles del Pedido #{selectedOrder.id}</h2>
+                                </ModalHeader>
+                                <ModalBody>
+                                    <p><strong>Fecha de Pedido:</strong> {selectedOrder.date_order}</p>
+                                    <p><strong>Fecha de Entrega:</strong> {selectedOrder.date_deliver || 'N/A'}</p>
+                                    <p><strong>Estado:</strong> {selectedOrder.status}</p>
+                                    <p><strong>Total Precio:</strong> {selectedOrder.total_price} €</p>
+                                    <p><strong>Total Productos:</strong> {selectedOrder.total_products}</p>
+
+                                    <Divider className="my-6" />
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {selectedOrder.products.map(product => (
+                                            <Card key={product.id} className='bg-amber-50 text-amber-950'>
+                                                <CardHeader>
+                                                    <Avatar isBordered radius="full" size="lg" src={`${IMAGE_PRODUCTS_BASE_URL}${product.image}`} />
+                                                    <div className="ml-4">
+                                                        <h4 className="font-bold">{product.name}</h4>
+                                                        <p><strong>Precio Unitario:</strong> {product.pivot.unit_price} €</p>
+                                                        <p><strong>Cantidad:</strong> {product.pivot.quantity}</p>
+                                                        <p><strong>Total:</strong> {product.pivot.quantity * product.pivot.unit_price} €</p>
+                                                    </div>
+                                                </CardHeader>
+                                            </Card>
+                                        ))}
+                                    </div>
+
+                                    <Divider className="my-6" />
+
+                                    <Card className="mb-6 bg-amber-50 text-amber-950">
+                                        <CardHeader>
+                                            <Avatar isBordered radius="full" size="md" src={`${IMAGE_USERS_BASE_URL}${selectedOrder.user.image}`} />
+                                            <div className="ml-4">
+                                                <h4 className="font-bold">{selectedOrder.user.name} {selectedOrder.user.surname}</h4>
+                                                <p>{selectedOrder.user.email}</p>
+                                            </div>
+                                        </CardHeader>
+                                        <CardBody>
+                                            <p><strong>Teléfono:</strong> {selectedOrder.user.phone}</p>
+                                            <p><strong>Código Postal:</strong> {selectedOrder.user.postal_code}</p>
+                                            <p><strong>Localidad:</strong> {selectedOrder.user.locality}</p>
+                                            <p><strong>Provincia:</strong> {selectedOrder.user.province}</p>
+                                            <p><strong>Calle:</strong> {selectedOrder.user.street}</p>
+                                            <p><strong>Número:</strong> {selectedOrder.user.number}</p>
+                                            <p><strong>Piso:</strong> {selectedOrder.user.floor}</p>
+                                            <p><strong>Escalera:</strong> {selectedOrder.user.staircase}</p>
+                                        </CardBody>
+                                    </Card>
+                                </ModalBody>
+                            </>
+                        )}
+                    </ModalContent>
+                </Modal>
+            )}
+        </div>
     );
 }

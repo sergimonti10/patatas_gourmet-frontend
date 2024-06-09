@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import CardRegister from "./cardRegister";
 import { useRouter } from 'next/navigation';
 import useUserStore from '../../../../store/authStore';
+import { toast } from "react-toastify";
 
 interface RegisterProps {
     router: ReturnType<typeof useRouter>;
@@ -59,6 +60,7 @@ const Register = ({ router }: RegisterProps) => {
                 setUser(data.user);
                 setToken(data.auth_token);
                 setRole(data.roles);
+                toast.success(data.message);
                 router.push('/dashboard');
             } else {
                 throw new Error(data.message || 'Error al registrar');

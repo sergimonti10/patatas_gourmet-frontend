@@ -61,12 +61,11 @@ const UpdateUser = ({ router, params }: UpdateUserProps) => {
 
             if (!userResponse.ok) {
                 const errorData = await userResponse.json();
-                toast.error(`Error: ${errorData.message}`);
-                throw new Error(errorData.message || 'Error al actualizar el usuario');
+                toast.error(`Error: ${errorData.error}`);
+                throw new Error(errorData.error || 'Error al actualizar el usuario');
             }
 
             const data = await userResponse.json();
-            console.log(data);
             toast.success("¡Usuario actualizado correctamente!");
             window.location.reload();
         } catch (error: any) {

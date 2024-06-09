@@ -80,7 +80,7 @@ export default function UserTable() {
     const filteredItems = useMemo(() => {
         if (!filterValue) return users;
         return users.filter(user =>
-            user.name.toLowerCase().includes(filterValue.toLowerCase())
+            user.email.toLowerCase().includes(filterValue.toLowerCase())
         );
     }, [users, filterValue]);
 
@@ -155,7 +155,7 @@ export default function UserTable() {
                     base: "w-full sm:max-w-[33%]",
                     inputWrapper: "border-1",
                 }}
-                placeholder="Buscar por nombre..."
+                placeholder="Buscar por email..."
                 size="sm"
                 startContent={<CiSearch className="text-default-300" />}
                 value={filterValue}

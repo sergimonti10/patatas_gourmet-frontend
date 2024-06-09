@@ -40,7 +40,7 @@ export default function CutTable() {
     const router = useRouter();
     const { token } = useUserStore();
     const [selectedCut, setSelectedCut] = useState<Cut | null>(null);
-    const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
+    const [isPopoverOpen, setIsPopoverOpen] = useState<number | null>(null);
 
     useEffect(() => {
         fetch(CUTS_BASE_URL, {
@@ -120,13 +120,13 @@ export default function CutTable() {
 
     const confirmDelete = (cut: Cut) => {
         setSelectedCut(cut);
-        setIsPopoverOpen(true);
+        setIsPopoverOpen(cut.id);
     };
 
     const handleDelete = () => {
         if (selectedCut) {
             deleteCut(selectedCut.id);
-            setIsPopoverOpen(false);
+            setIsPopoverOpen(null);
         }
     };
 
@@ -165,7 +165,7 @@ export default function CutTable() {
                             Descripción {sortDescriptor.column === 'description' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
                         </TableColumn>
                         <TableColumn onClick={() => handleSortChange('weight')} className='cursor-pointer text-md'>
-                            Peso/kg {sortDescriptor.column === 'weight' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
+                            Peso/g {sortDescriptor.column === 'weight' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
                         </TableColumn>
                         <TableColumn className='text-md text-center'>
                             Acciones
@@ -195,22 +195,24 @@ export default function CutTable() {
                                         </Button>
                                         <Button isIconOnly radius="full" size="sm" variant="light">
                                             <Tooltip content="Eliminar">
-                                                <Popover isOpen={isPopoverOpen} onClose={() => setIsPopoverOpen(false)} backdrop="blur">
-                                                    <PopoverTrigger>
-                                                        <span onClick={() => confirmDelete(cut)} className="text-lg text-danger cursor-pointer active:opacity-50 active:scale-90 transition-all">
-                                                            <CiTrash className="text-red-700 h-4 w-4" />
-                                                        </span>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent className="w-[240px]">
-                                                        <div className="p-4">
-                                                            <p>¿Estás seguro de que quieres eliminar este corte?</p>
-                                                            <div className="flex justify-end mt-4">
-                                                                <Button onClick={() => setIsPopoverOpen(false)} variant="light" size="sm" className="mr-2 hover:shadow-lg hover:scale-110">Cancelar</Button>
-                                                                <Button onClick={handleDelete} className='text-red-600 hover:shadow-lg hover:scale-110'>Eliminar</Button>
+                                                <span>
+                                                    <Popover isOpen={isPopoverOpen === cut.id} onClose={() => setIsPopoverOpen(null)} backdrop="blur">
+                                                        <PopoverTrigger>
+                                                            <span onClick={() => confirmDelete(cut)} className="text-lg text-danger cursor-pointer active:opacity-50 active:scale-90 transition-all">
+                                                                <CiTrash className="text-red-700 h-4 w-4" />
+                                                            </span>
+                                                        </PopoverTrigger>
+                                                        <PopoverContent className="w-[240px]">
+                                                            <div className="p-4">
+                                                                <p>¿Estás seguro de que quieres eliminar este corte?</p>
+                                                                <div className="flex justify-end mt-4">
+                                                                    <Button onClick={() => setIsPopoverOpen(null)} variant="flat">Cancelar</Button>
+                                                                    <Button onClick={handleDelete} color='danger'>Eliminar</Button>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </PopoverContent>
-                                                </Popover>
+                                                        </PopoverContent>
+                                                    </Popover>
+                                                </span>
                                             </Tooltip>
                                         </Button>
                                     </div>

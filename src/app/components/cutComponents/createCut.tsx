@@ -41,8 +41,6 @@ const CreateCut = ({ router }: CreateCutProps) => {
             const data = await cutsResponse.json();
             console.log(data);
             toast.success("Corte creado correctamente");
-
-            // Añadir un toast
             router.push('/dashboard/admin');
         } catch (error: any) {
             console.error('Error:', error);

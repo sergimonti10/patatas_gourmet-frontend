@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Input, Select, SelectItem } from "@nextui-org/react";
+import { Input, Select, SelectItem, Button } from "@nextui-org/react";
 import { CUTS_BASE_URL } from '@/services/links';
 import useUserStore from '../../../../store/authStore';
 
@@ -142,13 +142,14 @@ const CardCreateProduct: React.FC<CardProps> = ({
                         </div>
                     </div>
                     {error && <div className="text-red-700 grid font-bold place-content-center my-6">{error}</div>}
-                    <div className='grid place-content-center'>
-                        <button
-                            type="submit"
-                            className="hover:from-amber-700 hover:to-amber-900 bg-gradient-to-t from-amber-600 to-amber-700 shadow-md transition-all active:scale-95 text-white font-bold py-2 mt-4 px-4 rounded-md"
+                    <div className='mt-8 grid place-content-center'>
+                        <Button
+                            type='submit'
+                            radius="full"
+                            className="bg-gradient-to-tr from-amber-600 to-yellow-400 text-white shadow-lg"
                         >
-                            Registrar Producto
-                        </button>
+                            Crear Producto
+                        </Button>
                     </div>
                 </form>
             </div>
