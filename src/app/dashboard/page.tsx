@@ -40,7 +40,7 @@ export default function DashboardPage() {
             <section className="flex justify-center items-center w-full my-10">
                 <div className="max-w-[1500px] w-full">
                     <Accordion variant="splitted">
-                        <AccordionItem key="1" aria-label="Instalaciones" title="Instalaciones">
+                        <AccordionItem key="1" aria-label="Instalaciones" title="Instalaciones" className="hover:scale-105 transition-all">
                             <div ref={ref1} className={`flex flex-row items-center transition-opacity duration-1000 ${inView1 ? 'opacity-100' : 'opacity-0'}`}>
                                 <Image
                                     removeWrapper
@@ -55,7 +55,7 @@ export default function DashboardPage() {
                             </div>
                         </AccordionItem>
 
-                        <AccordionItem key="2" aria-label="Maquinaria" title="Maquinaria">
+                        <AccordionItem key="2" aria-label="Maquinaria" title="Maquinaria" className="hover:scale-105 transition-all">
                             <div ref={ref2} className={`flex flex-row items-center transition-opacity duration-1000 ${inView2 ? 'opacity-100' : 'opacity-0'}`}>
                                 <Image
                                     removeWrapper
@@ -70,7 +70,7 @@ export default function DashboardPage() {
                             </div>
                         </AccordionItem>
 
-                        <AccordionItem key="3" aria-label="Limpieza" title="Limpieza">
+                        <AccordionItem key="3" aria-label="Limpieza" title="Limpieza" className="hover:scale-105 transition-all">
                             <div ref={ref3} className={`flex flex-row items-center transition-opacity duration-1000 ${inView3 ? 'opacity-100' : 'opacity-0'}`}>
                                 <Image
                                     removeWrapper
@@ -85,7 +85,7 @@ export default function DashboardPage() {
                             </div>
                         </AccordionItem>
 
-                        <AccordionItem key="4" aria-label="Personal Cualificado" title="Personal Cualificado">
+                        <AccordionItem key="4" aria-label="Personal Cualificado" title="Personal Cualificado" className="hover:scale-105 transition-all">
                             <div ref={ref4} className={`flex flex-row items-center transition-opacity duration-1000 ${inView4 ? 'opacity-100' : 'opacity-0'}`}>
                                 <Image
                                     removeWrapper
@@ -100,7 +100,7 @@ export default function DashboardPage() {
                             </div>
                         </AccordionItem>
 
-                        <AccordionItem key="5" aria-label="Años de Experiencia" title="Años de Experiencia">
+                        <AccordionItem key="5" aria-label="Años de Experiencia" title="Años de Experiencia" className="hover:scale-105 transition-all">
                             <div ref={ref5} className={`flex flex-row items-center transition-opacity duration-1000 ${inView5 ? 'opacity-100' : 'opacity-0'}`}>
                                 <Image
                                     removeWrapper
@@ -115,7 +115,7 @@ export default function DashboardPage() {
                             </div>
                         </AccordionItem>
 
-                        <AccordionItem key="6" aria-label="Sobre Nosotros" title="Sobre Nosotros">
+                        <AccordionItem key="6" aria-label="Sobre Nosotros" title="Sobre Nosotros" className="hover:scale-105 transition-all">
                             <div ref={ref6} className={`transition-opacity duration-1000 ${inView6 ? 'opacity-100' : 'opacity-0'}`}>
                                 <div className="p-4">
                                     <p className="text-2xl font-bold lg:text-3xl">Sobre Nosotros</p>
@@ -127,7 +127,7 @@ export default function DashboardPage() {
                             </div>
                         </AccordionItem>
 
-                        <AccordionItem key="7" aria-label="Contacto" title="Contacto">
+                        <AccordionItem key="7" aria-label="Contacto" title="Contacto" className="hover:scale-105 transition-all">
                             <div ref={ref7} className={`transition-opacity duration-1000 ${inView7 ? 'opacity-100' : 'opacity-0'}`}>
                                 <div className="p-4">
                                     <p className="text-2xl font-bold lg:text-3xl">Contacto</p>

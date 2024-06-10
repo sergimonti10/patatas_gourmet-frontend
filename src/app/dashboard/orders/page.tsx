@@ -18,15 +18,17 @@ import {
     CardHeader,
     CardBody,
     Avatar,
+    Tooltip,
 } from "@nextui-org/react";
-import { CiSearch } from "react-icons/ci";
-import { FaSortUp, FaSortDown } from "react-icons/fa";
+import { CiSearch, CiTrash } from "react-icons/ci";
+import { FaSortUp, FaSortDown, FaArrowRight } from "react-icons/fa";
 import { useRouter } from 'next/navigation';
 import { Order } from '@/services/definitions';
 import { IMAGE_PRODUCTS_BASE_URL, IMAGE_USERS_BASE_URL, ORDERS_BASE_URL } from '@/services/links';
 import useUserStore from '../../../../store/authStore';
 import { toast } from 'react-toastify';
 import { Modal, ModalContent, ModalHeader, ModalBody } from "@nextui-org/react";
+import { FcCancel } from "react-icons/fc";
 
 export default function OrdersTable() {
     const [orders, setOrders] = useState<Order[]>([]);
@@ -37,7 +39,7 @@ export default function OrdersTable() {
         column: "date_order",
         direction: "descending",
     });
-    const { token } = useUserStore();
+    const { token, role, user } = useUserStore();
     const router = useRouter();
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -50,11 +52,15 @@ export default function OrdersTable() {
         })
             .then(response => response.json())
             .then(data => {
-                console.log('Orders fetched:', data);
-                setOrders(data);
+                if (role === 'user') {
+                    const filteredOrders = data.filter((order: Order) => order.id_user === user.id);
+                    setOrders(filteredOrders);
+                } else {
+                    setOrders(data);
+                }
             })
             .catch(error => console.error('Error fetching orders:', error));
-    }, [token]);
+    }, [token, role, user]);
 
     const handleSortChange = (column: keyof Order) => {
         setSortDescriptor(prev => {
@@ -114,7 +120,84 @@ export default function OrdersTable() {
                 },
             });
             setOrders(prevOrders => prevOrders.filter(order => order.id !== orderId));
-            toast.success(`¡Pedido ${orderId} cancelado correctamente!`);
+            toast.success(`¡Pedido ${orderId} eliminado correctamente!`);
+        } catch (error) {
+            toast.error(`Error al cancelar el pedido ${orderId}`);
+        }
+    };
+
+    const toMySQLDateFormat = (date: Date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    };
+
+    const updateOrder = async (orderId: number, currentStatus: Order['status']): Promise<void> => {
+        const statusOrder: Order['status'][] = ['pendiente', 'procesando', 'reparto', 'entregado', 'cancelado'];
+        const nextStatusIndex: number = statusOrder.indexOf(currentStatus) + 1;
+
+        if (nextStatusIndex >= statusOrder.length) {
+            toast.error(`No se puede actualizar el pedido ${orderId} porque ya está en el estado final.`);
+            return;
+        }
+
+        const nextStatus: Order['status'] = statusOrder[nextStatusIndex];
+        let updateData: any = { status: nextStatus };
+
+        if (nextStatus === 'entregado') {
+            updateData.date_deliver = toMySQLDateFormat(new Date());
+        }
+
+        try {
+            const response = await fetch(`${ORDERS_BASE_URL}/${orderId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updateData)
+            });
+
+            if (response.ok) {
+                setOrders((prevOrders: Order[]): Order[] =>
+                    prevOrders.map((order: Order): Order =>
+                        order.id === orderId ? { ...order, ...updateData } : order
+                    )
+                );
+                toast.success(`¡Pedido ${orderId} actualizado a ${nextStatus} correctamente!`);
+            } else {
+                toast.error(`Error al actualizar el pedido ${orderId}`);
+            }
+        } catch (error) {
+            toast.error(`Error al actualizar el pedido ${orderId}`);
+        }
+    };
+
+    const setOrderToCancelled = async (orderId: number): Promise<void> => {
+        try {
+            const response = await fetch(`${ORDERS_BASE_URL}/${orderId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: 'cancelado' })
+            });
+
+            if (response.ok) {
+                setOrders((prevOrders: Order[]): Order[] =>
+                    prevOrders.map((order: Order): Order =>
+                        order.id === orderId ? { ...order, status: 'cancelado' } : order
+                    )
+                );
+                toast.success(`¡Pedido ${orderId} ha sido cancelado correctamente!`);
+            } else {
+                toast.error(`Error al cancelar el pedido ${orderId}`);
+            }
         } catch (error) {
             toast.error(`Error al cancelar el pedido ${orderId}`);
         }
@@ -183,8 +266,28 @@ export default function OrdersTable() {
                                 <TableCell className="hover:bg-gray-100 text-sm">{order.date_order}</TableCell>
                                 <TableCell className="hover:bg-gray-100 text-sm">{order.date_deliver || 'N/A'}</TableCell>
                                 <TableCell className="hover:bg-gray-100 text-sm">{order.status}</TableCell>
-                                <TableCell className="hover:bg-gray-100 text-center">
-                                    <Button color='danger' size="sm" onClick={(e) => { e.stopPropagation(); cancelOrder(order.id); }}>Cancelar</Button>
+                                <TableCell className="hover:bg-red-100 text-center">
+                                    {role === 'super-admin' && (
+                                        <Tooltip content="Eliminar">
+                                            <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); cancelOrder(order.id); }}>
+                                                <CiTrash className="text-red-700 h-4 w-4" />
+                                            </Button>
+                                        </Tooltip>
+                                    )}
+                                    {role === 'admin' && (order.status !== 'entregado' && order.status !== 'cancelado') && (
+                                        <Tooltip content="Actualizar">
+                                            <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); updateOrder(order.id, order.status); }}>
+                                                <FaArrowRight className="text-amber-900 h-4 w-4" />
+                                            </Button>
+                                        </Tooltip>
+                                    )}
+                                    {role === 'user' && (order.status === 'pendiente') && (
+                                        <Tooltip content="Cancelar">
+                                            <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); setOrderToCancelled(order.id); }}>
+                                                <FcCancel className="h-4 w-4" />
+                                            </Button>
+                                        </Tooltip>
+                                    )}
                                 </TableCell>
                             </TableRow>
                         ))}
