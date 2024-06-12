@@ -27,7 +27,7 @@ import { Order } from '@/services/definitions';
 import { IMAGE_PRODUCTS_BASE_URL, IMAGE_USERS_BASE_URL, ORDERS_BASE_URL } from '@/services/links';
 import useUserStore from '../../../../store/authStore';
 import { toast } from 'react-toastify';
-import { Modal, ModalContent, ModalHeader, ModalBody } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, DateRangePicker, RangeValue, DateValue } from "@nextui-org/react";
 import { FcCancel } from "react-icons/fc";
 
 export default function OrdersTable() {
@@ -43,6 +43,7 @@ export default function OrdersTable() {
     const router = useRouter();
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const [dateRange, setDateRange] = useState<RangeValue<DateValue> | null>(null);
 
     useEffect(() => {
         fetch(ORDERS_BASE_URL, {
@@ -78,13 +79,34 @@ export default function OrdersTable() {
         });
     };
 
+    const convertDateValueToDate = (dateValue: DateValue): Date => {
+        const { year, month, day } = dateValue;
+        return new Date(year, month - 1, day);
+    };
+
     const filteredItems = useMemo(() => {
-        if (!filterValue) return orders;
-        return orders.filter(order =>
-            order.id.toString().includes(filterValue) ||
-            order.status.toLowerCase().includes(filterValue.toLowerCase())
-        );
-    }, [orders, filterValue]);
+        let filtered = orders;
+
+        if (filterValue) {
+            filtered = filtered.filter(order =>
+                order.id.toString().includes(filterValue) ||
+                order.status.toLowerCase().includes(filterValue.toLowerCase())
+            );
+        }
+
+        if (dateRange && dateRange.start && dateRange.end) {
+            const startDate = convertDateValueToDate(dateRange.start);
+            const endDate = convertDateValueToDate(dateRange.end);
+            endDate.setDate(endDate.getDate() + 1)
+
+            filtered = filtered.filter(order => {
+                const orderDate = new Date(order.date_order);
+                return orderDate >= startDate && orderDate <= endDate;
+            });
+        }
+
+        return filtered;
+    }, [orders, filterValue, dateRange]);
 
     const sortedItems = useMemo(() => {
         const sorted = [...filteredItems];
@@ -226,147 +248,155 @@ export default function OrdersTable() {
     };
 
     return (
-        <div className="w-full flex flex-col items-center justify-center m-5 p-4">
-            <h1 className="text-4xl font-bold mb-20">Panel de Pedidos</h1>
-            <Input
-                isClearable
-                classNames={{
-                    base: "w-full sm:max-w-[33%]",
-                    inputWrapper: "border-1",
-                }}
-                placeholder="Buscar por ID o estado..."
-                size="sm"
-                startContent={<CiSearch className="text-default-300" />}
-                value={filterValue}
-                variant="bordered"
-                onClear={() => setFilterValue("")}
-                onChange={handleSearchChange}
+        <>
+            <DateRangePicker
+                label="Rango de fechas"
+                className="max-w-xs mb-4"
+                onChange={setDateRange}
             />
-            <div className="w-full overflow-auto">
-                <Table>
-                    <TableHeader>
-                        <TableColumn onClick={() => handleSortChange('id')} className='cursor-pointer text-md'>
-                            Número de Pedido {sortDescriptor.column === 'id' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
-                        </TableColumn>
-                        <TableColumn onClick={() => handleSortChange('date_order')} className='cursor-pointer text-md'>
-                            Fecha de Pedido {sortDescriptor.column === 'date_order' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
-                        </TableColumn>
-                        <TableColumn onClick={() => handleSortChange('date_deliver')} className='cursor-pointer text-md'>
-                            Fecha de Entrega {sortDescriptor.column === 'date_deliver' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
-                        </TableColumn>
-                        <TableColumn onClick={() => handleSortChange('status')} className='cursor-pointer text-md'>
-                            Estado {sortDescriptor.column === 'status' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
-                        </TableColumn>
-                        <TableColumn className='text-md text-center'>Acciones</TableColumn>
-                    </TableHeader>
-                    <TableBody>
-                        {paginatedItems.map((order) => (
-                            <TableRow className='cursor-pointer' key={order.id} onClick={() => openOrderDetails(order.id)}>
-                                <TableCell className="hover:bg-gray-100 text-sm">{order.id}</TableCell>
-                                <TableCell className="hover:bg-gray-100 text-sm">{order.date_order}</TableCell>
-                                <TableCell className="hover:bg-gray-100 text-sm">{order.date_deliver || 'N/A'}</TableCell>
-                                <TableCell className="hover:bg-gray-100 text-sm">{order.status}</TableCell>
-                                <TableCell className="hover:bg-red-100 text-center">
-                                    {role === 'super-admin' && (
-                                        <Tooltip content="Eliminar">
-                                            <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); cancelOrder(order.id); }}>
-                                                <CiTrash className="text-red-700 h-4 w-4" />
-                                            </Button>
-                                        </Tooltip>
-                                    )}
-                                    {role === 'admin' && (order.status !== 'entregado' && order.status !== 'cancelado') && (
-                                        <Tooltip content="Actualizar">
-                                            <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); updateOrder(order.id, order.status); }}>
-                                                <FaArrowRight className="text-amber-900 h-4 w-4" />
-                                            </Button>
-                                        </Tooltip>
-                                    )}
-                                    {role === 'user' && (order.status === 'pendiente') && (
-                                        <Tooltip content="Cancelar">
-                                            <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); setOrderToCancelled(order.id); }}>
-                                                <FcCancel className="h-4 w-4" />
-                                            </Button>
-                                        </Tooltip>
-                                    )}
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+            <div className="w-full flex flex-col items-center justify-center m-5 p-4">
+                <h1 className="text-4xl font-bold mb-20">Panel de Pedidos</h1>
+                <Input
+                    isClearable
+                    classNames={{
+                        base: "w-full sm:max-w-[33%]",
+                        inputWrapper: "border-1",
+                    }}
+                    placeholder="Buscar por ID o estado..."
+                    size="sm"
+                    startContent={<CiSearch className="text-default-300" />}
+                    value={filterValue}
+                    variant="bordered"
+                    onClear={() => setFilterValue("")}
+                    onChange={handleSearchChange}
+                />
+                <div className="w-full overflow-auto">
+                    <Table>
+                        <TableHeader>
+                            <TableColumn onClick={() => handleSortChange('id')} className='cursor-pointer text-md'>
+                                Número de Pedido {sortDescriptor.column === 'id' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
+                            </TableColumn>
+                            <TableColumn onClick={() => handleSortChange('date_order')} className='cursor-pointer text-md'>
+                                Fecha de Pedido {sortDescriptor.column === 'date_order' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
+                            </TableColumn>
+                            <TableColumn onClick={() => handleSortChange('date_deliver')} className='cursor-pointer text-md'>
+                                Fecha de Entrega {sortDescriptor.column === 'date_deliver' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
+                            </TableColumn>
+                            <TableColumn onClick={() => handleSortChange('status')} className='cursor-pointer text-md'>
+                                Estado {sortDescriptor.column === 'status' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
+                            </TableColumn>
+                            <TableColumn className='text-md text-center'>Acciones</TableColumn>
+                        </TableHeader>
+                        <TableBody>
+                            {paginatedItems.map((order) => (
+                                <TableRow className='cursor-pointer' key={order.id} onClick={() => openOrderDetails(order.id)}>
+                                    <TableCell className="hover:bg-gray-100 text-sm">{order.id}</TableCell>
+                                    <TableCell className="hover:bg-gray-100 text-sm">{order.date_order}</TableCell>
+                                    <TableCell className="hover:bg-gray-100 text-sm">{order.date_deliver || 'N/A'}</TableCell>
+                                    <TableCell className="hover:bg-gray-100 text-sm">{order.status}</TableCell>
+                                    <TableCell className="hover:bg-red-100 text-center">
+                                        {role === 'super-admin' && (
+                                            <Tooltip content="Eliminar">
+                                                <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); cancelOrder(order.id); }}>
+                                                    <CiTrash className="text-red-700 h-4 w-4" />
+                                                </Button>
+                                            </Tooltip>
+                                        )}
+                                        {role === 'admin' && (order.status !== 'entregado' && order.status !== 'cancelado') && (
+                                            <Tooltip content="Actualizar">
+                                                <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); updateOrder(order.id, order.status); }}>
+                                                    <FaArrowRight className="text-amber-900 h-4 w-4" />
+                                                </Button>
+                                            </Tooltip>
+                                        )}
+                                        {role === 'user' && (order.status === 'pendiente') && (
+                                            <Tooltip content="Cancelar">
+                                                <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); setOrderToCancelled(order.id); }}>
+                                                    <FcCancel className="h-4 w-4" />
+                                                </Button>
+                                            </Tooltip>
+                                        )}
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </div>
+                <Pagination
+                    total={totalPages}
+                    initialPage={1}
+                    page={page}
+                    onChange={setPage}
+                    classNames={{
+                        cursor: "bg-foreground text-background",
+                    }}
+                    showControls
+                    showShadow
+                    className="py-4"
+                />
+
+                {selectedOrder && (
+                    <Modal size="3xl" isOpen={isOpen} onClose={onClose} className="overflow-auto max-h-[80vh] bg-slate-100 text-amber-950">
+                        <ModalContent>
+                            {() => (
+                                <>
+                                    <ModalHeader>
+                                        <h2>Detalles del Pedido #{selectedOrder.id}</h2>
+                                    </ModalHeader>
+                                    <ModalBody>
+                                        <p><strong>Fecha de Pedido:</strong> {selectedOrder.date_order}</p>
+                                        <p><strong>Fecha de Entrega:</strong> {selectedOrder.date_deliver || 'N/A'}</p>
+                                        <p><strong>Estado:</strong> {selectedOrder.status}</p>
+                                        <p><strong>Total Precio:</strong> {selectedOrder.total_price} €</p>
+                                        <p><strong>Total Productos:</strong> {selectedOrder.total_products}</p>
+
+                                        <Divider className="my-6" />
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {selectedOrder.products.map(product => (
+                                                <Card key={product.id} className='bg-amber-50 text-amber-950'>
+                                                    <CardHeader>
+                                                        <Avatar isBordered radius="full" size="lg" src={`${IMAGE_PRODUCTS_BASE_URL}${product.image}`} />
+                                                        <div className="ml-4">
+                                                            <h4 className="font-bold">{product.name}</h4>
+                                                            <p><strong>Precio Unitario:</strong> {product.pivot.unit_price} €</p>
+                                                            <p><strong>Cantidad:</strong> {product.pivot.quantity}</p>
+                                                            <p><strong>Total:</strong> {product.pivot.quantity * product.pivot.unit_price} €</p>
+                                                        </div>
+                                                    </CardHeader>
+                                                </Card>
+                                            ))}
+                                        </div>
+
+                                        <Divider className="my-6" />
+
+                                        <Card className="mb-6 bg-amber-50 text-amber-950">
+                                            <CardHeader>
+                                                <Avatar isBordered radius="full" size="md" src={`${IMAGE_USERS_BASE_URL}${selectedOrder.user.image}`} />
+                                                <div className="ml-4">
+                                                    <h4 className="font-bold">{selectedOrder.user.name} {selectedOrder.user.surname}</h4>
+                                                    <p>{selectedOrder.user.email}</p>
+                                                </div>
+                                            </CardHeader>
+                                            <CardBody>
+                                                <p><strong>Teléfono:</strong> {selectedOrder.user.phone}</p>
+                                                <p><strong>Código Postal:</strong> {selectedOrder.user.postal_code}</p>
+                                                <p><strong>Localidad:</strong> {selectedOrder.user.locality}</p>
+                                                <p><strong>Provincia:</strong> {selectedOrder.user.province}</p>
+                                                <p><strong>Calle:</strong> {selectedOrder.user.street}</p>
+                                                <p><strong>Número:</strong> {selectedOrder.user.number}</p>
+                                                <p><strong>Piso:</strong> {selectedOrder.user.floor}</p>
+                                                <p><strong>Escalera:</strong> {selectedOrder.user.staircase}</p>
+                                            </CardBody>
+                                        </Card>
+                                    </ModalBody>
+                                </>
+                            )}
+                        </ModalContent>
+                    </Modal>
+                )}
             </div>
-            <Pagination
-                total={totalPages}
-                initialPage={1}
-                page={page}
-                onChange={setPage}
-                classNames={{
-                    cursor: "bg-foreground text-background",
-                }}
-                showControls
-                showShadow
-                className="py-4"
-            />
+        </>
 
-            {selectedOrder && (
-                <Modal size="3xl" isOpen={isOpen} onClose={onClose} className="overflow-auto max-h-[80vh] bg-slate-100 text-amber-950">
-                    <ModalContent>
-                        {() => (
-                            <>
-                                <ModalHeader>
-                                    <h2>Detalles del Pedido #{selectedOrder.id}</h2>
-                                </ModalHeader>
-                                <ModalBody>
-                                    <p><strong>Fecha de Pedido:</strong> {selectedOrder.date_order}</p>
-                                    <p><strong>Fecha de Entrega:</strong> {selectedOrder.date_deliver || 'N/A'}</p>
-                                    <p><strong>Estado:</strong> {selectedOrder.status}</p>
-                                    <p><strong>Total Precio:</strong> {selectedOrder.total_price} €</p>
-                                    <p><strong>Total Productos:</strong> {selectedOrder.total_products}</p>
-
-                                    <Divider className="my-6" />
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {selectedOrder.products.map(product => (
-                                            <Card key={product.id} className='bg-amber-50 text-amber-950'>
-                                                <CardHeader>
-                                                    <Avatar isBordered radius="full" size="lg" src={`${IMAGE_PRODUCTS_BASE_URL}${product.image}`} />
-                                                    <div className="ml-4">
-                                                        <h4 className="font-bold">{product.name}</h4>
-                                                        <p><strong>Precio Unitario:</strong> {product.pivot.unit_price} €</p>
-                                                        <p><strong>Cantidad:</strong> {product.pivot.quantity}</p>
-                                                        <p><strong>Total:</strong> {product.pivot.quantity * product.pivot.unit_price} €</p>
-                                                    </div>
-                                                </CardHeader>
-                                            </Card>
-                                        ))}
-                                    </div>
-
-                                    <Divider className="my-6" />
-
-                                    <Card className="mb-6 bg-amber-50 text-amber-950">
-                                        <CardHeader>
-                                            <Avatar isBordered radius="full" size="md" src={`${IMAGE_USERS_BASE_URL}${selectedOrder.user.image}`} />
-                                            <div className="ml-4">
-                                                <h4 className="font-bold">{selectedOrder.user.name} {selectedOrder.user.surname}</h4>
-                                                <p>{selectedOrder.user.email}</p>
-                                            </div>
-                                        </CardHeader>
-                                        <CardBody>
-                                            <p><strong>Teléfono:</strong> {selectedOrder.user.phone}</p>
-                                            <p><strong>Código Postal:</strong> {selectedOrder.user.postal_code}</p>
-                                            <p><strong>Localidad:</strong> {selectedOrder.user.locality}</p>
-                                            <p><strong>Provincia:</strong> {selectedOrder.user.province}</p>
-                                            <p><strong>Calle:</strong> {selectedOrder.user.street}</p>
-                                            <p><strong>Número:</strong> {selectedOrder.user.number}</p>
-                                            <p><strong>Piso:</strong> {selectedOrder.user.floor}</p>
-                                            <p><strong>Escalera:</strong> {selectedOrder.user.staircase}</p>
-                                        </CardBody>
-                                    </Card>
-                                </ModalBody>
-                            </>
-                        )}
-                    </ModalContent>
-                </Modal>
-            )}
-        </div>
     );
 }

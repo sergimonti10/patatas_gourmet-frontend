@@ -6,8 +6,10 @@ const useCartStore = create((set) => ({
 
     initializeCart: () => {
         const user = useUserStore.getState().user;
-        const savedCart = localStorage.getItem(`cart_${user.id}`);
-        set({ cart: savedCart ? JSON.parse(savedCart) : [] });
+        if (user) {
+            const savedCart = localStorage.getItem(`cart_${user.id}`);
+            set({ cart: savedCart ? JSON.parse(savedCart) : [] });
+        }
     },
 
     addToCart: (product) => {

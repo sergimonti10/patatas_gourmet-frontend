@@ -5,7 +5,7 @@ import { Card, CardBody, Avatar, Button, Divider } from '@nextui-org/react';
 import useCartStore from '../../../../store/cartStore';
 import { FaTrashAlt } from 'react-icons/fa';
 import { Product } from '@/services/definitions';
-import { IMAGE_PRODUCTS_BASE_URL, ORDERS_BASE_URL } from '@/services/links';
+import { DOWNLOAD_PDF_BASE_URL, IMAGE_PRODUCTS_BASE_URL, ORDERS_BASE_URL } from '@/services/links';
 import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
 import { toast } from 'react-toastify';
 import useUserStore from '../../../../store/authStore';
@@ -24,7 +24,7 @@ interface CartProduct {
 export default function CartPage() {
     const cart = useCartStore((state) => state.cart);
     const removeFromCart = useCartStore((state) => state.removeFromCart);
-    const clearCart = useCartStore((state) => state.clearCart);
+    const clear = useCartStore((state) => state.clearCart);
     const { addToCart, removeProductFromCart } = useCartStore();
     const initializeCart = useCartStore((state) => state.initializeCart);
     const { user, token } = useUserStore();
@@ -42,6 +42,11 @@ export default function CartPage() {
         const total = groupedCart.reduce((sum: number, { product, quantity }: GroupedProduct) => sum + product.price * quantity, 0);
         return total;
     };
+
+    const clearCart = () => {
+        clear();
+        setShowPaymentForm(false);
+    }
 
     const groupCartItems = (cart: Product[]): GroupedProduct[] => {
         const grouped: { [key: string]: GroupedProduct } = {};
@@ -107,15 +112,38 @@ export default function CartPage() {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-
                 },
                 body: JSON.stringify(orderData),
             });
 
             if (response.ok) {
+                const order = await response.json();
                 toast.success('Compra realizada con éxito');
                 setShowPaymentForm(false);
                 clearCart();
+
+                const pdfResponse = await fetch(`${DOWNLOAD_PDF_BASE_URL}/${order.id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/pdf',
+                    },
+                });
+
+                if (pdfResponse.ok) {
+                    const blob = await pdfResponse.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `factura_patatas-gourmet_${order.id}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                    toast.success("Factura generada correctamente");
+                } else {
+                    toast.error('Error al generar la factura');
+                }
             } else {
                 toast.error('Error al realizar la compra');
             }
@@ -123,6 +151,7 @@ export default function CartPage() {
             toast.error('Error al realizar la compra');
         }
     };
+
 
 
 
@@ -149,7 +178,8 @@ export default function CartPage() {
                                     />
                                     <div className="flex flex-col gap-1 items-start justify-center">
                                         <h4 className="text-lg font-semibold">{product.name}</h4>
-                                        <p className="text-sm text-default-600">Precio: {product.price} €</p>
+                                        <p className="text-sm text-default-600">Precio/Unidad: {product.price} €</p>
+                                        <p className="text-sm text-default-600">Peso: {product.weight * quantity} kg</p>
                                         <div className="flex items-center">
                                             <button onClick={() => removeProductFromCart(product.id)}>
                                                 <CiCircleMinus />
