@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-import { Navbar, NavbarBrand, NavbarMenuToggle, NavbarMenuItem, NavbarMenu, NavbarContent, NavbarItem, Link, Image, Divider, Tooltip, Dropdown, DropdownTrigger, Avatar, DropdownItem, DropdownMenu, Badge } from '@nextui-org/react';
+import { Navbar, NavbarBrand, NavbarMenuToggle, NavbarMenuItem, NavbarMenu, NavbarContent, NavbarItem, Image, Divider, Tooltip, Dropdown, DropdownTrigger, Avatar, DropdownItem, DropdownMenu, Badge } from '@nextui-org/react';
 import { IoMdHome } from 'react-icons/io';
 import { FaShop } from 'react-icons/fa6';
 import { IoCart } from 'react-icons/io5';
@@ -14,6 +14,7 @@ import { usePathname } from 'next/navigation';
 import { FaUser } from "react-icons/fa";
 import { IMAGE_USERS_BASE_URL, USER_ID_BASE_URL } from '@/services/links';
 import { fontClasses } from '../fonts';
+import Link from 'next/link';
 
 export default function NavBar() {
     const pathname = usePathname();
@@ -94,6 +95,10 @@ export default function NavBar() {
     const handleLogOut = () => {
         logout();
     }
+
+    const handleMenuClose = () => {
+        setIsMenuOpen(false);
+    };
 
     return (
         <Navbar isBordered isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen} className='bg-amber-950 rounded-b-full'>
@@ -178,13 +183,13 @@ export default function NavBar() {
                                 <p className="font-semibold">{user.email}</p>
                             </DropdownItem>
                             <DropdownItem key="settings">
-                                <Link href={`/dashboard/userProfile/${user.id}`}>
+                                <Link href={`/dashboard/userProfile/${user.id}`} className="flex items-center">
                                     <FaUser className='w-4 h-4 mr-2' />
                                     Mi perfil
                                 </Link>
                             </DropdownItem>
                             <DropdownItem key="logout" color="danger">
-                                <Link href="/" onClick={handleLogOut}>
+                                <Link href="/" onClick={handleLogOut} className="flex items-center">
                                     <IoLogOut className='w-4 h-4 mr-2' />
                                     Cerrar sesión
                                 </Link>
@@ -197,7 +202,7 @@ export default function NavBar() {
             <NavbarMenu className='text-amber-950'>
                 {links.map((link, index) => (
                     <NavbarMenuItem key={`${link.name}-${index}`}>
-                        <Link className={`w-full text-xl ${fontClasses['font-unna']}`} href={link.href} size="lg">
+                        <Link className={`flex items-center w-full text-xl ${fontClasses['font-unna']}`} href={link.href} onClick={handleMenuClose}>
                             {link.name === 'Carrito' ? (
                                 <Badge
                                     content={cartCount}

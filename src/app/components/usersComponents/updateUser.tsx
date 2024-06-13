@@ -61,7 +61,7 @@ const UpdateUser = ({ router, params }: UpdateUserProps) => {
 
             if (!userResponse.ok) {
                 const errorData = await userResponse.json();
-                toast.error(`Error: ${errorData.error}`);
+                toast.error('Error: Debe de rellenar todos los campos (excepto: imagen, escalera y piso)');
                 throw new Error(errorData.error || 'Error al actualizar el usuario');
             }
 

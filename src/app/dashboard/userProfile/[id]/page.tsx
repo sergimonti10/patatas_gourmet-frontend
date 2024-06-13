@@ -8,6 +8,7 @@ import UpdateUser from "@/app/components/usersComponents/updateUser";
 import { Link } from "@nextui-org/react";
 import { FaArrowLeft } from "react-icons/fa";
 import PageDeleteUser from "@/app/components/usersComponents/deleteUser";
+import ChangePassword from "@/app/components/usersComponents/changePassword";
 
 interface UserDetailProps {
     params: {
@@ -30,6 +31,7 @@ export default function UserUpdatePage({ params }: UserDetailProps) {
         <div className="w-auto h-auto">
             <Suspense fallback={<LoadingWave />}>
                 <UpdateUser router={router} params={params} />
+                <ChangePassword />
                 <PageDeleteUser />
             </Suspense>
         </div>

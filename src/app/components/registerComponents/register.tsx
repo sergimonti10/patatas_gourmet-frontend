@@ -3,6 +3,7 @@ import CardRegister from "./cardRegister";
 import { useRouter } from 'next/navigation';
 import useUserStore from '../../../../store/authStore';
 import { toast } from "react-toastify";
+import { AUTH_BASE_URL } from "@/services/links";
 
 interface RegisterProps {
     router: ReturnType<typeof useRouter>;
@@ -46,7 +47,7 @@ const Register = ({ router }: RegisterProps) => {
         }
 
         try {
-            const registerResponse = await fetch('http://127.0.0.1:8000/api/register', {
+            const registerResponse = await fetch(`${AUTH_BASE_URL}register`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -61,6 +62,7 @@ const Register = ({ router }: RegisterProps) => {
                 setToken(data.auth_token);
                 setRole(data.roles);
                 toast.success(data.message);
+                // router.push('/verify-email');
                 router.push('/dashboard');
             } else {
                 throw new Error(data.message || 'Error al registrar');

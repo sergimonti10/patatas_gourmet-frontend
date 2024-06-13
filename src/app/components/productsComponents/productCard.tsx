@@ -38,6 +38,7 @@ export default function ProductCard({ product, user }: ProductCardProps) {
                     alt={product.name}
                     className="z-0 w-full h-full object-cover cursor-pointer"
                     src={`${IMAGE_PRODUCTS_BASE_URL}${product.image}`}
+                    loading="lazy"
                 />
             </Link>
             <CardFooter className="absolute bg-white/30 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">

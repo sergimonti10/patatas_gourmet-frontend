@@ -8,3 +8,4 @@ export const USERS_BASE_URL = 'http://127.0.0.1:8000/api/users';
 export const USER_ID_BASE_URL = 'http://127.0.0.1:8000/api/users/';
 export const ORDERS_BASE_URL = 'http://127.0.0.1:8000/api/orders';
 export const DOWNLOAD_PDF_BASE_URL = 'http://127.0.0.1:8000/api/generate-invoice'
+export const AUTH_BASE_URL = 'http://127.0.0.1:8000/api/'

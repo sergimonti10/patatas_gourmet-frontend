@@ -212,7 +212,6 @@ const CardUpdateUser: React.FC<CardProps> = ({
                             Actualizar
                         </Button>
                     </div>
-                    {error && <p className="text-red-500 mt-2">{error}</p>}
                 </form>
             </div>
         </div>

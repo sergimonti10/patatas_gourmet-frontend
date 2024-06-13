@@ -53,7 +53,7 @@ export default function OrdersTable() {
         })
             .then(response => response.json())
             .then(data => {
-                if (role === 'user') {
+                if (role.includes('user')) {
                     const filteredOrders = data.filter((order: Order) => order.id_user === user.id);
                     setOrders(filteredOrders);
                 } else {
@@ -271,56 +271,60 @@ export default function OrdersTable() {
                     onChange={handleSearchChange}
                 />
                 <div className="w-full overflow-auto">
-                    <Table>
-                        <TableHeader>
-                            <TableColumn onClick={() => handleSortChange('id')} className='cursor-pointer text-md'>
-                                Número de Pedido {sortDescriptor.column === 'id' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
-                            </TableColumn>
-                            <TableColumn onClick={() => handleSortChange('date_order')} className='cursor-pointer text-md'>
-                                Fecha de Pedido {sortDescriptor.column === 'date_order' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
-                            </TableColumn>
-                            <TableColumn onClick={() => handleSortChange('date_deliver')} className='cursor-pointer text-md'>
-                                Fecha de Entrega {sortDescriptor.column === 'date_deliver' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
-                            </TableColumn>
-                            <TableColumn onClick={() => handleSortChange('status')} className='cursor-pointer text-md'>
-                                Estado {sortDescriptor.column === 'status' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
-                            </TableColumn>
-                            <TableColumn className='text-md text-center'>Acciones</TableColumn>
-                        </TableHeader>
-                        <TableBody>
-                            {paginatedItems.map((order) => (
-                                <TableRow className='cursor-pointer' key={order.id} onClick={() => openOrderDetails(order.id)}>
-                                    <TableCell className="hover:bg-gray-100 text-sm">{order.id}</TableCell>
-                                    <TableCell className="hover:bg-gray-100 text-sm">{order.date_order}</TableCell>
-                                    <TableCell className="hover:bg-gray-100 text-sm">{order.date_deliver || 'N/A'}</TableCell>
-                                    <TableCell className="hover:bg-gray-100 text-sm">{order.status}</TableCell>
-                                    <TableCell className="hover:bg-red-100 text-center">
-                                        {role === 'super-admin' && (
-                                            <Tooltip content="Eliminar">
-                                                <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); cancelOrder(order.id); }}>
-                                                    <CiTrash className="text-red-700 h-4 w-4" />
-                                                </Button>
-                                            </Tooltip>
-                                        )}
-                                        {role === 'admin' && (order.status !== 'entregado' && order.status !== 'cancelado') && (
-                                            <Tooltip content="Actualizar">
-                                                <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); updateOrder(order.id, order.status); }}>
-                                                    <FaArrowRight className="text-amber-900 h-4 w-4" />
-                                                </Button>
-                                            </Tooltip>
-                                        )}
-                                        {role === 'user' && (order.status === 'pendiente') && (
-                                            <Tooltip content="Cancelar">
-                                                <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); setOrderToCancelled(order.id); }}>
-                                                    <FcCancel className="h-4 w-4" />
-                                                </Button>
-                                            </Tooltip>
-                                        )}
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                    {Array.isArray(role) && role.includes('user') && orders.length === 0 ? (
+                        <h3 className='text-center m-10'>¡Todavía no tienes ningún pedido, realiza tu primer pedido!</h3>
+                    ) : (
+                        <Table>
+                            <TableHeader>
+                                <TableColumn onClick={() => handleSortChange('id')} className='cursor-pointer text-md'>
+                                    Número de Pedido {sortDescriptor.column === 'id' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
+                                </TableColumn>
+                                <TableColumn onClick={() => handleSortChange('date_order')} className='cursor-pointer text-md'>
+                                    Fecha de Pedido {sortDescriptor.column === 'date_order' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
+                                </TableColumn>
+                                <TableColumn onClick={() => handleSortChange('date_deliver')} className='cursor-pointer text-md'>
+                                    Fecha de Entrega {sortDescriptor.column === 'date_deliver' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
+                                </TableColumn>
+                                <TableColumn onClick={() => handleSortChange('status')} className='cursor-pointer text-md'>
+                                    Estado {sortDescriptor.column === 'status' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
+                                </TableColumn>
+                                <TableColumn className='text-md text-center'>Acciones</TableColumn>
+                            </TableHeader>
+                            <TableBody>
+                                {paginatedItems.map((order) => (
+                                    <TableRow className='cursor-pointer' key={order.id} onClick={() => openOrderDetails(order.id)}>
+                                        <TableCell className="hover:bg-gray-100 text-sm">{order.id}</TableCell>
+                                        <TableCell className="hover:bg-gray-100 text-sm">{order.date_order}</TableCell>
+                                        <TableCell className="hover:bg-gray-100 text-sm">{order.date_deliver || 'N/A'}</TableCell>
+                                        <TableCell className="hover:bg-gray-100 text-sm">{order.status}</TableCell>
+                                        <TableCell className="hover:bg-red-100 text-center">
+                                            {Array.isArray(role) && role.includes('super-admin') && (
+                                                <Tooltip content="Eliminar">
+                                                    <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); cancelOrder(order.id); }}>
+                                                        <CiTrash className="text-red-700 h-4 w-4" />
+                                                    </Button>
+                                                </Tooltip>
+                                            )}
+                                            {Array.isArray(role) && role.includes('admin') && (order.status !== 'entregado' && order.status !== 'cancelado') && (
+                                                <Tooltip content="Actualizar">
+                                                    <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); updateOrder(order.id, order.status); }}>
+                                                        <FaArrowRight className="text-amber-900 h-4 w-4" />
+                                                    </Button>
+                                                </Tooltip>
+                                            )}
+                                            {Array.isArray(role) && role.includes('user') && (order.status === 'pendiente') && (
+                                                <Tooltip content="Cancelar">
+                                                    <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); setOrderToCancelled(order.id); }}>
+                                                        <FcCancel className="h-4 w-4" />
+                                                    </Button>
+                                                </Tooltip>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    )}
                 </div>
                 <Pagination
                     total={totalPages}

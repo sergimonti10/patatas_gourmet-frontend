@@ -8,7 +8,7 @@ import { FaShopSlash, FaShop } from 'react-icons/fa6';
 export default function Home() {
   return (
     <div className="bg-cover bg-center flex h-screen flex-col md:flex-row">
-      <Image src="/images/home.png" alt="Background Image" fill className="z-0 object-cover" />
+      <Image src="/images/home.png" alt="Background Image" fill className="z-0 object-cover" loading="lazy" />
       <div className="absolute inset-0 z-10 flex flex-col items-center w-full h-full">
         <div className="absolute top-0 left-0 w-full h-1/5 bg-gradient-to-b from-white to-transparent z-10"></div>
         <header className="flex items-center py-4 w-full z-20">
@@ -18,7 +18,6 @@ export default function Home() {
             </h1>
           </div>
         </header>
-
         <div className="flex-grow flex flex-col w-full overflow-hidden z-10 h-full items-center">
           <div className="flex-shrink-0 h-16"></div>
           <div className="overflow-auto w-full h-full">

@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import FormLogin from "./cardLogin";
 import useUserStore from '../../../../store/authStore';
 import { fetchLogin } from "../../../services/data";
+import { AUTH_BASE_URL } from "@/services/links";
 
 const Login = ({ router }) => {
     const [email, setEmail] = useState("");
@@ -14,7 +15,7 @@ const Login = ({ router }) => {
         event.preventDefault();
 
         try {
-            const loginResponse = await fetch('http://127.0.0.1:8000/api/login', {
+            const loginResponse = await fetch(`${AUTH_BASE_URL}login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

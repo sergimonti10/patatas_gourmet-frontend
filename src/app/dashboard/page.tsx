@@ -32,6 +32,7 @@ export default function DashboardPage() {
                             alt="Patatas Gourmet"
                             className="z-0 w-full h-full object-cover"
                             src="images/dashboard.jpg"
+                            loading="lazy"
                         />
                     </Card>
                 </div>
@@ -47,6 +48,7 @@ export default function DashboardPage() {
                                     alt="Instalaciones"
                                     src="images/instalaciones.jpg"
                                     className="max-w-[300px] h-full object-cover"
+                                    loading="lazy"
                                 />
                                 <div className="w-1/2 p-4">
                                     <p className="text-2xl font-bold lg:text-3xl">Instalaciones</p>
@@ -62,6 +64,7 @@ export default function DashboardPage() {
                                     alt="Maquinaria"
                                     src="images/maquinaria.jpg"
                                     className="max-w-[300px] h-full object-cover"
+                                    loading="lazy"
                                 />
                                 <div className="w-1/2 p-4">
                                     <p className="text-2xl font-bold lg:text-3xl">Maquinaria</p>
@@ -77,6 +80,7 @@ export default function DashboardPage() {
                                     alt="Limpieza"
                                     src="images/limpieza.jpg"
                                     className="max-w-[300px] h-full object-cover"
+                                    loading="lazy"
                                 />
                                 <div className="w-1/2 p-4">
                                     <p className="text-2xl font-bold lg:text-3xl">Limpieza</p>
@@ -92,6 +96,7 @@ export default function DashboardPage() {
                                     alt="Personal Profesional"
                                     src="images/personal.jpg"
                                     className="max-w-[300px] h-full object-cover"
+                                    loading="lazy"
                                 />
                                 <div className="w-1/2 p-4">
                                     <p className="text-2xl font-bold lg:text-3xl">Personal Cualificado</p>
@@ -107,6 +112,7 @@ export default function DashboardPage() {
                                     alt="Años de Experiencia"
                                     src="images/tiempo.jpg"
                                     className="max-w-[300px] h-full object-cover"
+                                    loading="lazy"
                                 />
                                 <div className="w-1/2 p-4">
                                     <p className="text-2xl font-bold lg:text-3xl">Años de Experiencia</p>
