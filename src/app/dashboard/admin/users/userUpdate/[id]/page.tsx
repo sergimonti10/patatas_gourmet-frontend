@@ -5,8 +5,8 @@ import { LoadingWave } from "@/app/components/general/skeletons";
 import { Suspense, useEffect } from "react";
 import useUserStore from "../../../../../../../store/authStore";
 import UpdateUser from "@/app/components/usersComponents/updateUser";
-import { Link } from "@nextui-org/react";
 import { FaArrowLeft } from "react-icons/fa";
+import Link from "next/link";
 
 interface UserDetailProps {
     params: {

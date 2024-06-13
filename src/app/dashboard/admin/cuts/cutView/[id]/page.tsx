@@ -1,7 +1,7 @@
 'use client';
 
 import CutDetailLoader from '@/app/components/cutComponents/cutDetailLoader';
-import { Link } from '@nextui-org/react';
+import Link from 'next/link';
 import { FaArrowLeft } from 'react-icons/fa';
 
 interface CutDetailProps {

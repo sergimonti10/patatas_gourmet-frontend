@@ -4,8 +4,8 @@ import Login from "@/app/components/loginComponents/login";
 import { FaArrowLeft } from 'react-icons/fa'
 import Image from "next/image";
 import { fontClasses } from "../components/fonts";
-import { Link } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 
 export default function LoginPage() {

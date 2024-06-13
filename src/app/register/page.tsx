@@ -5,7 +5,7 @@ import { FaArrowLeft } from 'react-icons/fa'
 import Image from "next/image";
 import { fontClasses } from "../components/fonts";
 import Register from "../components/registerComponents/register";
-import { Link } from "@nextui-org/react";
+import Link from "next/link";
 
 export default function RegisterPage() {
     const router = useRouter();

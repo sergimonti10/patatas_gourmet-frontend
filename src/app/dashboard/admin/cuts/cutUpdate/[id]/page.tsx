@@ -5,8 +5,8 @@ import { LoadingWave } from "@/app/components/general/skeletons";
 import { Suspense, useEffect } from "react";
 import useUserStore from "../../../../../../../store/authStore";
 import UpdateCut from "@/app/components/cutComponents/updateCut";
-import { Link } from "@nextui-org/react";
 import { FaArrowLeft } from "react-icons/fa";
+import Link from "next/link";
 
 interface CutDetailProps {
     params: {

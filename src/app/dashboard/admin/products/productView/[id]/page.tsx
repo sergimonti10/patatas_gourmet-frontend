@@ -1,5 +1,5 @@
 import ProductDetailLoader from '@/app/components/productsComponents/productDetailLoader';
-import { Link } from '@nextui-org/react';
+import Link from 'next/link';
 import { FaArrowLeft } from 'react-icons/fa';
 
 interface ProductDetailProps {

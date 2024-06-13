@@ -1,5 +1,5 @@
 import UserDetailLoader from '@/app/components/usersComponents/userDetailLoader';
-import { Link } from '@nextui-org/react';
+import Link from 'next/link';
 import { FaArrowLeft } from 'react-icons/fa';
 
 interface UserDetailProps {

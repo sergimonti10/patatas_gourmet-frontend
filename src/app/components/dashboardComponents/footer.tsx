@@ -1,5 +1,6 @@
-import { Divider, Image, Link } from "@nextui-org/react";
+import { Divider, Image } from "@nextui-org/react";
 import { fontClasses } from "../fonts";
+import Link from "next/link";
 
 export default function Footer() {
     return (

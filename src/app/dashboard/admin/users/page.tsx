@@ -200,9 +200,6 @@ export default function UserTable() {
                         <TableColumn onClick={() => handleSortChange('phone')} className='cursor-pointer text-md'>
                             Teléfono {sortDescriptor.column === 'phone' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
                         </TableColumn>
-                        <TableColumn onClick={() => handleSortChange('role')} className='cursor-pointer text-md'>
-                            Rol {sortDescriptor.column === 'role' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
-                        </TableColumn>
                         <TableColumn className='text-md'>Acciones</TableColumn>
                     </TableHeader>
                     <TableBody>
@@ -226,7 +223,6 @@ export default function UserTable() {
                                 <TableCell className="hover:bg-gray-100 text-sm">{user.floor}</TableCell>
                                 <TableCell className="hover:bg-gray-100 text-sm">{user.staircase}</TableCell>
                                 <TableCell className="hover:bg-gray-100 text-sm">{user.phone}</TableCell>
-                                <TableCell className="hover:bg-gray-100 text-sm">{user.role}</TableCell>
                                 <TableCell className="hover:bg-gray-100">
                                     <div className="flex gap-2">
                                         <Button isIconOnly radius="full" size="sm" variant="light" onClick={() => editUser(user.id)}>
