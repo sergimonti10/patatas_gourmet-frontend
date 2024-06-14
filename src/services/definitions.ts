@@ -52,3 +52,18 @@ export interface Order {
   products: Product[];
   user: User;
 }
+
+export interface Review {
+  id: string;
+  id_product: number;
+  id_user: number;
+  rating: number;
+  comment: string;
+  created_at: string;
+  user: {
+    name: string;
+    surname: string;
+    email: string;
+    image: string;
+  };
+}
