@@ -126,12 +126,10 @@ const Reviews = ({ params }: ReviewSectionProps) => {
     };
 
     return (
-        <div className="container mx-auto my-8">
-            <h2 className="text-2xl font-bold mb-4">Valoraciones ({calculateAverageRating(reviews)}/5)</h2>
+        <div className="container mx-auto p-4 my-8 max-w-screen-lg">
+            <h2 className="text-2xl font-bold mb-2">Valoraciones ({calculateAverageRating(reviews)}/5)</h2>
+            {reviews.length > 0 && <h4 className="italic mb-8">({reviews.length} valoraciones)</h4>}
             <form onSubmit={handleSubmit} className="mb-6">
-                <div className="mb-4">
-                    {renderStars(rating)}
-                </div>
                 <div className="mb-4">
                     <Input
                         placeholder="Escribe tu valoración aquí..."
@@ -139,6 +137,9 @@ const Reviews = ({ params }: ReviewSectionProps) => {
                         onChange={handleCommentChange}
                         fullWidth
                     />
+                </div>
+                <div className="mb-4">
+                    {renderStars(rating)}
                 </div>
                 <Button type="submit" color='warning' className='text-white' variant='shadow'>Enviar Valoración</Button>
             </form>

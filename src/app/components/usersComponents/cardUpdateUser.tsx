@@ -79,82 +79,83 @@ const CardUpdateUser: React.FC<CardProps> = ({
             <div className="bg-slate-100 p-3 sm:p-6 w-full max-w-md rounded-xl shadow-md bg-opacity-80 hover:shadow-lg transform transition duration-300 hover:scale-105 overflow-auto">
                 <form onSubmit={handleSubmit} className="my-5">
                     <p className='text-2xl text-center my-3 md:text-3xl lg:my-5'>Actualizar Usuario</p>
+                    <p className='text-center italic my-3 text-red-800 lg:my-3'>Los campos con * son obligatorios.</p>
                     <div className='grid grid-cols-1 gap-4'>
                         <div className='text-lg md:text-xl'>
                             <Input
                                 type="text"
-                                label="Nombre"
+                                label="Nombre*"
                                 variant="bordered"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 required
-                                className="max-w-xs"
+                                className="max-w-s"
                             />
                         </div>
                         <div className='text-lg md:text-xl'>
                             <Input
                                 type="text"
-                                label="Apellido"
+                                label="Apellido*"
                                 variant="bordered"
                                 value={surname}
                                 onChange={(e) => setSurname(e.target.value)}
                                 required
-                                className="max-w-xs"
+                                className="max-w-s"
                             />
                         </div>
                         <div className='text-lg md:text-xl'>
                             <Input
                                 type="text"
-                                label="Código Postal"
+                                label="Código Postal*"
                                 variant="bordered"
                                 value={postal_code}
                                 onChange={(e) => setPostalCode(e.target.value)}
                                 required
-                                className="max-w-xs"
+                                className="max-w-s"
                             />
                         </div>
                         <div className='text-lg md:text-xl'>
                             <Input
                                 type="text"
-                                label="Localidad"
+                                label="Localidad*"
                                 variant="bordered"
                                 value={locality}
                                 onChange={(e) => setLocality(e.target.value)}
                                 required
-                                className="max-w-xs"
+                                className="max-w-s"
                             />
                         </div>
                         <div className='text-lg md:text-xl'>
                             <Input
                                 type="text"
-                                label="Provincia"
+                                label="Provincia*"
                                 variant="bordered"
                                 value={province}
                                 onChange={(e) => setProvince(e.target.value)}
                                 required
-                                className="max-w-xs"
+                                className="max-w-s"
                             />
                         </div>
                         <div className='text-lg md:text-xl'>
                             <Input
                                 type="text"
-                                label="Calle"
+                                label="Calle*"
                                 variant="bordered"
                                 value={street}
                                 onChange={(e) => setStreet(e.target.value)}
                                 required
-                                className="max-w-xs"
+                                className="max-w-s"
                             />
                         </div>
                         <div className='text-lg md:text-xl'>
                             <Input
                                 type="text"
-                                label="Número"
+                                label="Número*"
                                 variant="bordered"
                                 value={number}
                                 onChange={(e) => setNumber(e.target.value)}
                                 required
-                                className="max-w-xs"
+                                className="max-w-s"
                             />
                         </div>
                         <div className='text-lg md:text-xl'>
@@ -164,7 +165,7 @@ const CardUpdateUser: React.FC<CardProps> = ({
                                 variant="bordered"
                                 value={floor}
                                 onChange={(e) => setFloor(e.target.value)}
-                                className="max-w-xs"
+                                className="max-w-s"
                             />
                         </div>
                         <div className='text-lg md:text-xl'>
@@ -174,18 +175,18 @@ const CardUpdateUser: React.FC<CardProps> = ({
                                 variant="bordered"
                                 value={staircase}
                                 onChange={(e) => setStaircase(e.target.value)}
-                                className="max-w-xs"
+                                className="max-w-s"
                             />
                         </div>
                         <div className='text-lg md:text-xl'>
                             <Input
                                 type="text"
-                                label="Teléfono"
+                                label="Teléfono*"
                                 variant="bordered"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
                                 required
-                                className="max-w-xs"
+                                className="max-w-s"
                             />
                         </div>
                         <div className='text-lg md:text-xl'>

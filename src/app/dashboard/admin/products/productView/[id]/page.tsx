@@ -1,6 +1,10 @@
+'use client'
+
 import ProductDetailLoader from '@/app/components/productsComponents/productDetailLoader';
 import Link from 'next/link';
 import { FaArrowLeft } from 'react-icons/fa';
+import useUserStore from '../../../../../../../store/authStore';
+import { useEffect } from 'react';
 
 interface ProductDetailProps {
     params: {
@@ -9,6 +13,14 @@ interface ProductDetailProps {
 }
 
 export default function ProductViewPage({ params }: ProductDetailProps) {
+    const { user } = useUserStore();
+
+    useEffect(() => {
+        if (!user) {
+            window.location.href = '/';
+        }
+    }, [user]);
+
     return (
         <div className="w-full h-full overflow-auto">
             <header className="flex items-center py-4 w-full z-20">

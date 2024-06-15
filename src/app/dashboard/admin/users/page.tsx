@@ -39,10 +39,15 @@ export default function UserTable() {
         direction: "ascending",
     });
     const router = useRouter();
-    const { token } = useUserStore();
+    const { token, user } = useUserStore();
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [isPopoverOpen, setIsPopoverOpen] = useState<number | null>(null);
 
+    useEffect(() => {
+        if (!user) {
+            window.location.href = '/';
+        }
+    }, [user]);
 
     useEffect(() => {
         fetch(USERS_BASE_URL, {

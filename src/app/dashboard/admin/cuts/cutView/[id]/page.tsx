@@ -3,6 +3,8 @@
 import CutDetailLoader from '@/app/components/cutComponents/cutDetailLoader';
 import Link from 'next/link';
 import { FaArrowLeft } from 'react-icons/fa';
+import useUserStore from '../../../../../../../store/authStore';
+import { useEffect } from 'react';
 
 interface CutDetailProps {
     params: {
@@ -11,6 +13,14 @@ interface CutDetailProps {
 }
 
 export default function CutViewPage({ params }: CutDetailProps) {
+    const { user } = useUserStore();
+
+    useEffect(() => {
+        if (!user) {
+            window.location.href = '/';
+        }
+    }, [user]);
+
     return (
         <div className="w-auto h-auto">
             <header className="flex items-center py-4 w-full z-20">

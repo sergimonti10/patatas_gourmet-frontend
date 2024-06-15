@@ -38,9 +38,15 @@ export default function CutTable() {
         direction: "ascending",
     });
     const router = useRouter();
-    const { token } = useUserStore();
+    const { token, user } = useUserStore();
     const [selectedCut, setSelectedCut] = useState<Cut | null>(null);
     const [isPopoverOpen, setIsPopoverOpen] = useState<number | null>(null);
+
+    useEffect(() => {
+        if (!user) {
+            window.location.href = '/';
+        }
+    }, [user]);
 
     useEffect(() => {
         fetch(CUTS_BASE_URL, {

@@ -1,6 +1,10 @@
+'use client'
+
 import UserDetailLoader from '@/app/components/usersComponents/userDetailLoader';
 import Link from 'next/link';
 import { FaArrowLeft } from 'react-icons/fa';
+import useUserStore from '../../../../../../../store/authStore';
+import { useEffect } from 'react';
 
 interface UserDetailProps {
     params: {
@@ -9,6 +13,14 @@ interface UserDetailProps {
 }
 
 export default function UserViewPage({ params }: UserDetailProps) {
+    const { user } = useUserStore();
+
+    useEffect(() => {
+        if (!user) {
+            window.location.href = '/';
+        }
+    }, [user]);
+
     return (
         <div className="w-auto h-auto">
             <header className="flex items-center py-4 w-full z-20">

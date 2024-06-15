@@ -46,6 +46,12 @@ export default function OrdersTable() {
     const [dateRange, setDateRange] = useState<RangeValue<DateValue> | null>(null);
 
     useEffect(() => {
+        if (!user) {
+            window.location.href = '/';
+        }
+    }, [user]);
+
+    useEffect(() => {
         fetch(ORDERS_BASE_URL, {
             headers: {
                 'Authorization': `Bearer ${token}`,

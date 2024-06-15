@@ -35,6 +35,12 @@ export default function CartPage() {
     const [cardHolderName, setCardHolderName] = useState('');
 
     useEffect(() => {
+        if (!user) {
+            window.location.href = '/';
+        }
+    }, [user]);
+
+    useEffect(() => {
         initializeCart();
     }, [initializeCart]);
 

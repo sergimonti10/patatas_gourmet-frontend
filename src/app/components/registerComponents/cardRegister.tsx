@@ -62,11 +62,12 @@ const CardRegister: React.FC<CardProps> = ({
                 <form onSubmit={handleSubmit} className="my-5">
                     <p className='text-2xl text-center my-3 md:text-3xl lg:my-5'>Registro</p>
                     <p className='text-center italic my-3 text-amber-800 lg:my-3'>Tu dirección nos servirá para enviarte nuestros productos</p>
+                    <p className='text-center italic my-3 text-red-800 lg:my-3'>Los campos con * son obligatorios.</p>
                     <div className='grid grid-cols-2 gap-4'>
                         <div className='text-lg md:text-xl'>
                             <Input
                                 type="text"
-                                label="Nombre"
+                                label="Nombre*"
                                 variant="bordered"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
@@ -77,7 +78,7 @@ const CardRegister: React.FC<CardProps> = ({
                         <div className='text-lg md:text-xl'>
                             <Input
                                 type="text"
-                                label="Apellido"
+                                label="Apellido*"
                                 variant="bordered"
                                 value={surname}
                                 onChange={(e) => setSurname(e.target.value)}
@@ -88,7 +89,7 @@ const CardRegister: React.FC<CardProps> = ({
                         <div className='text-lg md:text-xl'>
                             <Input
                                 type="email"
-                                label="Correo electrónico"
+                                label="Correo electrónico*"
                                 variant="bordered"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -99,7 +100,7 @@ const CardRegister: React.FC<CardProps> = ({
                         <div className='text-lg md:text-xl'>
                             <Input
                                 type="password"
-                                label="Contraseña"
+                                label="Contraseña*"
                                 variant="bordered"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -110,7 +111,7 @@ const CardRegister: React.FC<CardProps> = ({
                         <div className='text-lg md:text-xl'>
                             <Input
                                 type="password"
-                                label="Confirma tu contraseña"
+                                label="Confirma tu contraseña*"
                                 variant="bordered"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -121,7 +122,7 @@ const CardRegister: React.FC<CardProps> = ({
                         <div className='text-lg md:text-xl'>
                             <Input
                                 type="text"
-                                label="Código Postal"
+                                label="Código Postal*"
                                 variant="bordered"
                                 value={postalCode}
                                 onChange={(e) => setPostalCode(e.target.value)}
@@ -132,7 +133,7 @@ const CardRegister: React.FC<CardProps> = ({
                         <div className='text-lg md:text-xl'>
                             <Input
                                 type="text"
-                                label="Localidad"
+                                label="Localidad*"
                                 variant="bordered"
                                 value={locality}
                                 onChange={(e) => setLocality(e.target.value)}
@@ -143,7 +144,7 @@ const CardRegister: React.FC<CardProps> = ({
                         <div className='text-lg md:text-xl'>
                             <Input
                                 type="text"
-                                label="Provincia"
+                                label="Provincia*"
                                 variant="bordered"
                                 value={province}
                                 onChange={(e) => setProvince(e.target.value)}
@@ -154,7 +155,7 @@ const CardRegister: React.FC<CardProps> = ({
                         <div className='text-lg md:text-xl'>
                             <Input
                                 type="text"
-                                label="Calle"
+                                label="Calle*"
                                 variant="bordered"
                                 value={street}
                                 onChange={(e) => setStreet(e.target.value)}
@@ -165,7 +166,7 @@ const CardRegister: React.FC<CardProps> = ({
                         <div className='text-lg md:text-xl'>
                             <Input
                                 type="text"
-                                label="Número"
+                                label="Número*"
                                 variant="bordered"
                                 value={number}
                                 onChange={(e) => setNumber(e.target.value)}
@@ -194,25 +195,9 @@ const CardRegister: React.FC<CardProps> = ({
                             />
                         </div>
                         <div className='text-lg md:text-xl'>
-                            <label htmlFor="image">Imagen</label>
-                            <input
-                                type="file"
-                                name="image"
-                                id="image"
-                                onChange={handleImageChange}
-                                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-amber-100 file:text-amber-950 hover:file:bg-amber-200"
-                            />
-                        </div>
-                        {selectedImage && (
-                            <div className="mt-4 flex flex-col items-center">
-                                <p>Imagen seleccionada</p>
-                                <img src={selectedImage} alt="Imagen usuario" className="rounded-xl w-20 h-20" />
-                            </div>
-                        )}
-                        <div className='text-lg md:text-xl'>
                             <Input
                                 type="text"
-                                label="Teléfono"
+                                label="Teléfono*"
                                 variant="bordered"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
@@ -221,6 +206,22 @@ const CardRegister: React.FC<CardProps> = ({
                             />
                         </div>
                     </div>
+                    <div className='text-lg md:text-xl my-2'>
+                        <label htmlFor="image">Imagen</label>
+                        <input
+                            type="file"
+                            name="image"
+                            id="image"
+                            onChange={handleImageChange}
+                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-amber-100 file:text-amber-950 hover:file:bg-amber-200"
+                        />
+                    </div>
+                    {selectedImage && (
+                        <div className="mt-4 flex flex-col items-center">
+                            <p>Imagen seleccionada</p>
+                            <img src={selectedImage} alt="Imagen usuario" className="rounded-xl w-20 h-20" />
+                        </div>
+                    )}
                     {!samePasswords && <div className="text-red-700 grid font-bold place-content-center my-6">Las contraseñas no coinciden</div>}
                     {error && <div className="text-red-700 grid font-bold place-content-center my-6">{error}</div>}
                     <div className='mt-8 grid place-content-center'>
