@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Product } from '@/services/definitions';
 import { IMAGE_PRODUCTS_BASE_URL, PRODUCT_ID_BASE_URL } from '@/services/links';
-import { Image } from '@nextui-org/react';
+import { Image, Button, Input } from '@nextui-org/react';
 import { toast } from 'react-toastify';
 import { LoadingCard } from '@/app/components/general/skeletons';
+import useCartStore from '../../../../store/cartStore';
 
 interface ProductDetailProps {
     params: {
@@ -19,6 +20,8 @@ const ProductDetailLoader = ({ params }: ProductDetailProps) => {
     const router = useRouter();
     const [product, setProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState(true);
+    const [quantity, setQuantity] = useState(1);
+    const { addToCart } = useCartStore();
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -46,6 +49,15 @@ const ProductDetailLoader = ({ params }: ProductDetailProps) => {
         return <LoadingCard />;
     }
 
+    const handleAddToCart = () => {
+        if (product) {
+            for (let i = 0; i < quantity; i++) {
+                addToCart(product);
+            }
+            toast.success(`Añadido al carrito: ${quantity} x ${product.name}`);
+        }
+    };
+
     return (
         <div className="container mx-auto p-4 max-w-screen-lg">
             <h1 className="text-3xl font-bold mb-4">{product?.name}</h1>
@@ -70,6 +82,25 @@ const ProductDetailLoader = ({ params }: ProductDetailProps) => {
             <p className="text-xl mb-2 font-bold border rounded-md p-4">Precio: {product?.price} €</p>
             <p className="text-xl mb-2 font-bold border rounded-md p-4">Peso: {product?.weight} kg</p>
             <p className="text-xl mb-2 font-bold border rounded-md p-4">Tipo de corte: {product?.cut?.name}</p>
+            <div className="flex flex-col items-center mt-4">
+                Añadir cantidad <Input
+                    type="number"
+                    value={quantity.toString()}
+                    min={1}
+                    onChange={(e) => setQuantity(Number(e.target.value))}
+                    className="mb-4 max-w-24"
+                    aria-label="Cantidad"
+                />
+                <Button
+                    size="lg"
+                    color='warning'
+                    variant='shadow'
+                    className="w-full text-white"
+                    onClick={handleAddToCart}
+                >
+                    Añadir al carrito
+                </Button>
+            </div>
         </div>
     );
 };

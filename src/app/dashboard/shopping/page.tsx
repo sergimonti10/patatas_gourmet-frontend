@@ -109,8 +109,6 @@ export default function CartPage() {
             products: Object.values(groupedProducts)
         };
 
-        console.log('Order Data:', orderData);
-
         try {
             const response = await fetch(ORDERS_BASE_URL, {
                 method: 'POST',
@@ -128,28 +126,35 @@ export default function CartPage() {
                 setShowPaymentForm(false);
                 clearCart();
 
-                const pdfResponse = await fetch(`${DOWNLOAD_PDF_BASE_URL}/${order.id}`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/pdf',
-                    },
-                });
-
-                if (pdfResponse.ok) {
-                    const blob = await pdfResponse.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `factura_patatas-gourmet_${order.id}.pdf`;
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
-                    window.URL.revokeObjectURL(url);
-                    toast.success("Factura generada correctamente");
-                } else {
-                    toast.error('Error al generar la factura');
-                }
+                toast.promise(
+                    fetch(`${DOWNLOAD_PDF_BASE_URL}/${order.id}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Accept': 'application/pdf',
+                        },
+                    }).then(async (pdfResponse) => {
+                        if (pdfResponse.ok) {
+                            const blob = await pdfResponse.blob();
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `factura_patatas-gourmet_${order.id}.pdf`;
+                            document.body.appendChild(a);
+                            a.click();
+                            a.remove();
+                            window.URL.revokeObjectURL(url);
+                            return "Factura generada correctamente";
+                        } else {
+                            throw new Error('Error al generar la factura');
+                        }
+                    }),
+                    {
+                        pending: 'Generando factura...',
+                        success: 'Factura generada correctamente',
+                        error: 'Error al generar la factura',
+                    }
+                );
             } else {
                 toast.error('Error al realizar la compra');
             }
@@ -224,7 +229,8 @@ export default function CartPage() {
             )}
             <div className={`${showPaymentForm ? 'block' : 'hidden'} mt-8`}>
                 <div className="bg-white p-8 rounded-lg shadow-lg max-w-md mx-auto">
-                    <h2 className="text-2xl font-bold mb-4">Detalles de Pago</h2>
+                    <h2 className="text-2xl font-bold mb-2">Detalles de Pago</h2>
+                    <h4 className="font-bold italic mb-4">La dirección del envío es la que figura en tu perfil</h4>
                     <form className="space-y-4" onSubmit={handleConfirmPurchase}>
                         <div>
                             <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700">
