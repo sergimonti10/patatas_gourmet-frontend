@@ -140,7 +140,7 @@ export default function NavBar() {
                         {index > 0 && <Divider orientation='vertical' className='h-1/2' />}
                         <NavbarItem className='text-amber-100'>
                             <Tooltip content={link.name} placement="bottom" className="block md:hidden">
-                                <Link href={link.href} className={`flex flex-col items-center mx-2 p-1 rounded-lg ${pathname === link.href ? 'shadow-glow-amber' : ''}`}>
+                                <Link href={link.href} className={`flex flex-col items-center transition-all active:scale-95 hover:shadow-glow-amber-hover mx-2 p-1 rounded-lg ${pathname === link.href ? 'shadow-glow-amber' : ''}`}>
                                     {link.name === 'Carrito' ? (
                                         <Badge
                                             content={cartCount}

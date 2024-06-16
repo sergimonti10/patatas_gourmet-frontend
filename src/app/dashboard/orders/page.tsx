@@ -24,11 +24,12 @@ import { CiSearch, CiTrash } from "react-icons/ci";
 import { FaSortUp, FaSortDown, FaArrowRight } from "react-icons/fa";
 import { useRouter } from 'next/navigation';
 import { Order } from '@/services/definitions';
-import { IMAGE_PRODUCTS_BASE_URL, IMAGE_USERS_BASE_URL, ORDERS_BASE_URL } from '@/services/links';
+import { DOWNLOAD_PDF_BASE_URL, IMAGE_PRODUCTS_BASE_URL, IMAGE_USERS_BASE_URL, ORDERS_BASE_URL } from '@/services/links';
 import useUserStore from '../../../../store/authStore';
 import { toast } from 'react-toastify';
 import { Modal, ModalContent, ModalHeader, ModalBody, DateRangePicker, RangeValue, DateValue } from "@nextui-org/react";
 import { FcCancel } from "react-icons/fc";
+import { fontClasses } from '@/app/components/fonts';
 
 export default function OrdersTable() {
     const [orders, setOrders] = useState<Order[]>([]);
@@ -96,10 +97,10 @@ export default function OrdersTable() {
         if (filterValue) {
             filtered = filtered.filter(order =>
                 order.id.toString().includes(filterValue) ||
-                order.status.toLowerCase().includes(filterValue.toLowerCase())
+                order.status.toLowerCase().includes(filterValue.toLowerCase()) ||
+                order.user.email.toLowerCase().includes(filterValue.toLocaleLowerCase())
             );
         }
-
         if (dateRange && dateRange.start && dateRange.end) {
             const startDate = convertDateValueToDate(dateRange.start);
             const endDate = convertDateValueToDate(dateRange.end);
@@ -253,6 +254,38 @@ export default function OrdersTable() {
         }
     };
 
+    const generateInvoice = async (orderId: number) => {
+        return toast.promise(
+            fetch(`${DOWNLOAD_PDF_BASE_URL}/${orderId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/pdf',
+                },
+            }).then(async (pdfResponse) => {
+                if (pdfResponse.ok) {
+                    const blob = await pdfResponse.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `factura_patatas-gourmet_${orderId}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                    return "Factura generada correctamente";
+                } else {
+                    throw new Error('Error al generar la factura');
+                }
+            }),
+            {
+                pending: 'Generando factura...',
+                success: 'Factura generada correctamente',
+                error: 'Error al generar la factura',
+            }
+        );
+    };
+
     return (
         <>
             <DateRangePicker
@@ -268,7 +301,7 @@ export default function OrdersTable() {
                         base: "w-full sm:max-w-[33%]",
                         inputWrapper: "border-1",
                     }}
-                    placeholder="Buscar por ID o estado..."
+                    placeholder="Buscar por ID, estado o email..."
                     size="sm"
                     startContent={<CiSearch className="text-default-300" />}
                     value={filterValue}
@@ -285,6 +318,9 @@ export default function OrdersTable() {
                                 <TableColumn onClick={() => handleSortChange('id')} className='cursor-pointer text-md'>
                                     Número de Pedido {sortDescriptor.column === 'id' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
                                 </TableColumn>
+                                <TableColumn onClick={() => handleSortChange('id_user')} className='cursor-pointer text-md'>
+                                    Usuario {sortDescriptor.column === 'id_user' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
+                                </TableColumn>
                                 <TableColumn onClick={() => handleSortChange('date_order')} className='cursor-pointer text-md'>
                                     Fecha de Pedido {sortDescriptor.column === 'date_order' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
                                 </TableColumn>
@@ -300,31 +336,30 @@ export default function OrdersTable() {
                                 {paginatedItems.map((order) => (
                                     <TableRow className='cursor-pointer' key={order.id} onClick={() => openOrderDetails(order.id)}>
                                         <TableCell className="hover:bg-gray-100 text-sm">{order.id}</TableCell>
+                                        <TableCell className="hover:bg-gray-100 text-sm">{order.user.email}</TableCell>
                                         <TableCell className="hover:bg-gray-100 text-sm">{order.date_order}</TableCell>
                                         <TableCell className="hover:bg-gray-100 text-sm">{order.date_deliver || 'N/A'}</TableCell>
                                         <TableCell className="hover:bg-gray-100 text-sm">{order.status}</TableCell>
                                         <TableCell className="hover:bg-red-100 text-center">
-                                            {Array.isArray(role) && role.includes('super-admin') && (
+                                            {role && role.includes('super-admin') ? (
                                                 <Tooltip content="Eliminar">
                                                     <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); cancelOrder(order.id); }}>
                                                         <CiTrash className="text-red-700 h-4 w-4" />
                                                     </Button>
                                                 </Tooltip>
-                                            )}
-                                            {Array.isArray(role) && role.includes('admin') && (order.status !== 'entregado' && order.status !== 'cancelado') && (
+                                            ) : role && role.includes('admin') && (order.status !== 'entregado' && order.status !== 'cancelado') ? (
                                                 <Tooltip content="Actualizar">
                                                     <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); updateOrder(order.id, order.status); }}>
                                                         <FaArrowRight className="text-amber-900 h-4 w-4" />
                                                     </Button>
                                                 </Tooltip>
-                                            )}
-                                            {Array.isArray(role) && role.includes('user') && (order.status === 'pendiente') && (
+                                            ) : role && role.includes('user') && (order.status === 'pendiente') ? (
                                                 <Tooltip content="Cancelar">
                                                     <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); setOrderToCancelled(order.id); }}>
                                                         <FcCancel className="h-4 w-4" />
                                                     </Button>
                                                 </Tooltip>
-                                            )}
+                                            ) : null}
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -346,18 +381,28 @@ export default function OrdersTable() {
                 />
 
                 {selectedOrder && (
-                    <Modal size="3xl" isOpen={isOpen} onClose={onClose} className="overflow-auto max-h-[80vh] bg-slate-100 text-amber-950">
+                    <Modal size="3xl" isOpen={isOpen} onClose={onClose} className={`overflow-auto max-h-[80vh] bg-slate-100 text-amber-950 ${fontClasses['font-unna']}`}>
                         <ModalContent>
                             {() => (
                                 <>
-                                    <ModalHeader>
+                                    <ModalHeader className='flex justify-between items-center'>
                                         <h2>Detalles del Pedido #{selectedOrder.id}</h2>
+                                        <Button
+                                            size="lg"
+                                            color='warning'
+                                            variant='shadow'
+                                            className="text-white mx-8 my-4"
+                                            onClick={() => generateInvoice(selectedOrder.id)}
+                                        >
+                                            Generar factura
+                                        </Button>
                                     </ModalHeader>
                                     <ModalBody>
                                         <p><strong>Fecha de Pedido:</strong> {selectedOrder.date_order}</p>
                                         <p><strong>Fecha de Entrega:</strong> {selectedOrder.date_deliver || 'N/A'}</p>
                                         <p><strong>Estado:</strong> {selectedOrder.status}</p>
-                                        <p><strong>Total Precio:</strong> {selectedOrder.total_price} €</p>
+                                        <p><strong>Subotal Precio:</strong> {selectedOrder.total_price} €</p>
+                                        <p><strong>Total Precio (IVA: 21%):</strong> {(selectedOrder.total_price * 1.21).toFixed(2)} €</p>
                                         <p><strong>Total Productos:</strong> {selectedOrder.total_products}</p>
 
                                         <Divider className="my-6" />

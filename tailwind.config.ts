@@ -33,7 +33,8 @@ const config: Config = {
         }
       },
       boxShadow: {
-        'glow-amber': '0 0 10px 2px rgba(255, 236, 217, 0.7)',
+        'glow-amber': '0 0 10px 2px rgba(255, 236, 217, 0.9)',
+        'glow-amber-hover': '0 0 10px 2px rgba(255, 236, 217, 0.3)',
       },
     },
   },

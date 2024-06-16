@@ -213,9 +213,13 @@ export default function CartPage() {
             {cart.length > 0 && (
                 <>
                     <Divider className="my-6" />
-                    <div className="flex justify-between items-center max-w-[600px] mx-auto">
-                        <p className="text-xl font-bold">Total:</p>
+                    <div className="flex justify-between items-center max-w-[600px] mx-auto mb-2">
+                        <p className="text-xl font-bold">Subtotal:</p>
                         <p className="text-xl font-bold">{getTotalPrice()} €</p>
+                    </div>
+                    <div className="flex justify-between items-center max-w-[600px] mx-auto">
+                        <p className="text-xl font-bold">Total (IVA: 21%):</p>
+                        <p className="text-xl font-bold">{(getTotalPrice() * 1.21).toFixed(2)} €</p>
                     </div>
                     <div className="flex justify-between mt-4 mx-auto max-w-[600px]">
                         <Button color="danger" onClick={clearCart}>

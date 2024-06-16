@@ -65,7 +65,7 @@ export default function ProductCard({ product, user }: ProductCardProps) {
     return (
         <Card
             isFooterBlurred
-            className="w-52 sm:w-72 lg:w-80 h-auto mx-auto"
+            className="w-52 sm:w-72 lg:w-80 h-auto mx-auto active:scale-95 transition-all"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
