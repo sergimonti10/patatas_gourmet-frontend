@@ -8,6 +8,7 @@ import { Image, Button, Input } from '@nextui-org/react';
 import { toast } from 'react-toastify';
 import { LoadingCard } from '@/app/components/general/skeletons';
 import useCartStore from '../../../../store/cartStore';
+import useUserStore from '../../../../store/authStore';
 
 interface ProductDetailProps {
     params: {
@@ -22,6 +23,7 @@ const ProductDetailLoader = ({ params }: ProductDetailProps) => {
     const [loading, setLoading] = useState(true);
     const [quantity, setQuantity] = useState(1);
     const { addToCart } = useCartStore();
+    const { user } = useUserStore();
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -50,6 +52,10 @@ const ProductDetailLoader = ({ params }: ProductDetailProps) => {
     }
 
     const handleAddToCart = () => {
+        if (!user) {
+            toast.warning("Debe registrarse para realizar una compra.");
+            return;
+        }
         if (product) {
             for (let i = 0; i < quantity; i++) {
                 addToCart(product);
