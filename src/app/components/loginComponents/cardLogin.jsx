@@ -16,7 +16,7 @@ const CardLogin = ({ handleSubmit, email, password, setEmail, setPassword, error
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="max-w-xs"
+                className="w-full"
               />
             </div>
             <div className='text-lg md:text-xl'>
@@ -27,7 +27,7 @@ const CardLogin = ({ handleSubmit, email, password, setEmail, setPassword, error
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="max-w-xs"
+                className="w-full"
               />
             </div>
           </div>

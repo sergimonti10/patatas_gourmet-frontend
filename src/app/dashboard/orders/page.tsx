@@ -19,9 +19,13 @@ import {
     CardBody,
     Avatar,
     Tooltip,
+    Popover,
+    PopoverTrigger,
+    PopoverContent,
 } from "@nextui-org/react";
 import { CiSearch, CiTrash } from "react-icons/ci";
-import { FaSortUp, FaSortDown, FaArrowRight } from "react-icons/fa";
+import { FaSortUp, FaSortDown } from "react-icons/fa";
+import { IoMdMore } from "react-icons/io";
 import { useRouter } from 'next/navigation';
 import { Order } from '@/services/definitions';
 import { DOWNLOAD_PDF_BASE_URL, IMAGE_PRODUCTS_BASE_URL, IMAGE_USERS_BASE_URL, ORDERS_BASE_URL } from '@/services/links';
@@ -45,6 +49,7 @@ export default function OrdersTable() {
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [dateRange, setDateRange] = useState<RangeValue<DateValue> | null>(null);
+    const [isPopoverOpen, setIsPopoverOpen] = useState<number | null>(null);
 
     useEffect(() => {
         if (!user) {
@@ -165,19 +170,10 @@ export default function OrdersTable() {
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     };
 
-    const updateOrder = async (orderId: number, currentStatus: Order['status']): Promise<void> => {
-        const statusOrder: Order['status'][] = ['pendiente', 'procesando', 'reparto', 'entregado', 'cancelado'];
-        const nextStatusIndex: number = statusOrder.indexOf(currentStatus) + 1;
+    const handleStatusChange = async (orderId: number, newStatus: Order['status']) => {
+        let updateData: { status: Order['status']; date_deliver?: string } = { status: newStatus };
 
-        if (nextStatusIndex >= statusOrder.length) {
-            toast.error(`No se puede actualizar el pedido ${orderId} porque ya está en el estado final.`);
-            return;
-        }
-
-        const nextStatus: Order['status'] = statusOrder[nextStatusIndex];
-        let updateData: any = { status: nextStatus };
-
-        if (nextStatus === 'entregado') {
+        if (newStatus === 'entregado') {
             updateData.date_deliver = toMySQLDateFormat(new Date());
         }
 
@@ -192,18 +188,19 @@ export default function OrdersTable() {
             });
 
             if (response.ok) {
-                setOrders((prevOrders: Order[]): Order[] =>
-                    prevOrders.map((order: Order): Order =>
+                setOrders((prevOrders) =>
+                    prevOrders.map((order) =>
                         order.id === orderId ? { ...order, ...updateData } : order
                     )
                 );
-                toast.success(`¡Pedido ${orderId} actualizado a ${nextStatus} correctamente!`);
+                toast.success(`¡Pedido ${orderId} actualizado a ${newStatus} correctamente!`);
             } else {
                 toast.error(`Error al actualizar el pedido ${orderId}`);
             }
         } catch (error) {
             toast.error(`Error al actualizar el pedido ${orderId}`);
         }
+        setIsPopoverOpen(null);
     };
 
     const setOrderToCancelled = async (orderId: number): Promise<void> => {
@@ -286,6 +283,11 @@ export default function OrdersTable() {
         );
     };
 
+    const confirmDelete = (order: Order) => {
+        setSelectedOrder(order);
+        setIsPopoverOpen(order.id);
+    };
+
     return (
         <>
             <DateRangePicker
@@ -334,13 +336,13 @@ export default function OrdersTable() {
                             </TableHeader>
                             <TableBody>
                                 {paginatedItems.map((order) => (
-                                    <TableRow className='cursor-pointer' key={order.id} onClick={() => openOrderDetails(order.id)}>
-                                        <TableCell className="hover:bg-gray-100 text-sm">{order.id}</TableCell>
-                                        <TableCell className="hover:bg-gray-100 text-sm">{order.user.email}</TableCell>
-                                        <TableCell className="hover:bg-gray-100 text-sm">{order.date_order}</TableCell>
-                                        <TableCell className="hover:bg-gray-100 text-sm">{order.date_deliver || 'N/A'}</TableCell>
-                                        <TableCell className="hover:bg-gray-100 text-sm">{order.status}</TableCell>
-                                        <TableCell className="hover:bg-red-100 text-center">
+                                    <TableRow className='cursor-pointer' key={order.id} onClick={(e) => { if (isPopoverOpen !== order.id) openOrderDetails(order.id); }}>
+                                        <TableCell className="hover:bg-amber-50 text-sm">{order.id}</TableCell>
+                                        <TableCell className="hover:bg-amber-50 text-sm">{order.user.email}</TableCell>
+                                        <TableCell className="hover:bg-amber-50 text-sm">{order.date_order}</TableCell>
+                                        <TableCell className="hover:bg-amber-50 text-sm">{order.date_deliver || 'N/A'}</TableCell>
+                                        <TableCell className="hover:bg-amber-50 text-sm">{order.status}</TableCell>
+                                        <TableCell className="hover:bg-amber-50 text-center">
                                             {role && role.includes('super-admin') ? (
                                                 <Tooltip content="Eliminar">
                                                     <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); cancelOrder(order.id); }}>
@@ -348,10 +350,26 @@ export default function OrdersTable() {
                                                     </Button>
                                                 </Tooltip>
                                             ) : role && role.includes('admin') && (order.status !== 'entregado' && order.status !== 'cancelado') ? (
-                                                <Tooltip content="Actualizar">
-                                                    <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); updateOrder(order.id, order.status); }}>
-                                                        <FaArrowRight className="text-amber-900 h-4 w-4" />
-                                                    </Button>
+                                                <Tooltip content="Actualizar estado">
+                                                    <span>
+                                                        <Popover isOpen={isPopoverOpen === order.id} onOpenChange={(open) => setIsPopoverOpen(open ? order.id : null)} showArrow offset={10} placement="bottom" backdrop="blur">
+                                                            <PopoverTrigger>
+                                                                <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); setIsPopoverOpen(order.id); }}>
+                                                                    <IoMdMore className="text-amber-900 h-4 w-4" />
+                                                                </Button>
+                                                            </PopoverTrigger>
+                                                            <PopoverContent className="w-[240px]">
+                                                                <div className="p-3">
+                                                                    <p>Actualizar estado del pedido {order.id}</p>
+                                                                    <div className="flex flex-col mt-4 gap-1">
+                                                                        <Button color='warning' onClick={() => handleStatusChange(order.id, 'procesando')} variant="flat">Procesando</Button>
+                                                                        <Button color='warning' onClick={() => handleStatusChange(order.id, 'reparto')} variant="flat">Reparto</Button>
+                                                                        <Button color='warning' onClick={() => handleStatusChange(order.id, 'entregado')} variant="flat">Entregado</Button>
+                                                                    </div>
+                                                                </div>
+                                                            </PopoverContent>
+                                                        </Popover>
+                                                    </span>
                                                 </Tooltip>
                                             ) : role && role.includes('user') && (order.status === 'pendiente') ? (
                                                 <Tooltip content="Cancelar">
@@ -452,6 +470,5 @@ export default function OrdersTable() {
                 )}
             </div>
         </>
-
     );
 }
