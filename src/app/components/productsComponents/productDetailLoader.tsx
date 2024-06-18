@@ -56,6 +56,10 @@ const ProductDetailLoader = ({ params }: ProductDetailProps) => {
             toast.warning("Debe registrarse para realizar una compra.");
             return;
         }
+        if (quantity === 0) {
+            toast.warning("Debe añadir al menos una unidad para añadir al carrito");
+            return;
+        }
         if (product) {
             for (let i = 0; i < quantity; i++) {
                 addToCart(product);

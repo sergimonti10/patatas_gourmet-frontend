@@ -20,7 +20,7 @@ export default function Home() {
         </header>
         <div className="flex-grow flex flex-col w-full overflow-hidden z-10 h-full items-center">
           <div className="flex-shrink-0 h-16"></div>
-          <div className="overflow-auto w-full h-full">
+          <div className="overflow-auto w-full h-full flex items-center">
             <section className="bg-gradient-radial from-amber-500 to-transparent p-6 w-full items-stretch min-w-min flex flex-col lg:flex-row justify-center gap-4">
               <article className="flex flex-grow">
                 <CardHome href="/dashboard" Icon={FaShopSlash} title="¡Visítanos!" title1="Tienda" description="Explora una amplia variedad de opciones para productos de alta calidad. Somos expertos en la patata al vacio." />

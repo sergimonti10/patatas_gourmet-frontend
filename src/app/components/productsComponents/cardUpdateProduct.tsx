@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
-import { CUTS_BASE_URL, PRODUCTS_BASE_URL, PRODUCT_ID_BASE_URL, IMAGE_PRODUCTS_BASE_URL } from '@/services/links';
+import { CUTS_BASE_URL, PRODUCT_ID_BASE_URL, IMAGE_PRODUCTS_BASE_URL } from '@/services/links';
 import useUserStore from '../../../../store/authStore';
 
 interface Cut {
@@ -71,17 +71,13 @@ const CardUpdateProduct: React.FC<CardProps> = ({
                 });
             })
             .catch(error => console.error('Error fetching product:', error));
-    }, [productId, token, setName, setDescription, setPrice, setWeight, setIdCut]);
+    }, [productId, token, setName, setDescription, setPrice, setWeight, setIdCut, setNameIdCut]);
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, setImageFunction: (image: File | null) => void, setSelectedImageFunction: (image: string | null) => void) => {
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, setImage: (image: File | null) => void, setSelectedImage: (image: string | null) => void) => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
-            setImageFunction(file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setSelectedImageFunction(reader.result as string);
-            };
-            reader.readAsDataURL(file);
+            setImage(file);
+            setSelectedImage(URL.createObjectURL(file));
         }
     };
 
@@ -204,4 +200,5 @@ const CardUpdateProduct: React.FC<CardProps> = ({
         </div>
     );
 };
+
 export default CardUpdateProduct;

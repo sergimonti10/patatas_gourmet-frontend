@@ -73,7 +73,7 @@ export default function ChangePassword() {
                                     value={currentPassword}
                                     onChange={(e) => setCurrentPassword(e.target.value)}
                                     required
-                                    className="max-w-xs"
+                                    className="w-full"
                                 />
                             </div>
                             <div className="text-lg md:text-xl">
@@ -84,7 +84,7 @@ export default function ChangePassword() {
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
                                     required
-                                    className="max-w-xs"
+                                    className="w-full"
                                 />
                             </div>
                             <div className="text-lg md:text-xl">
@@ -95,7 +95,7 @@ export default function ChangePassword() {
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     required
-                                    className="max-w-xs"
+                                    className="w-full"
                                 />
                             </div>
                         </div>

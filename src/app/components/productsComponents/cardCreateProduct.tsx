@@ -33,6 +33,8 @@ const CardCreateProduct: React.FC<CardProps> = ({
 }) => {
     const [cuts, setCuts] = useState<Cut[]>([]);
     const { token } = useUserStore();
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [selectedImage2, setSelectedImage2] = useState<string | null>(null);
 
     useEffect(() => {
         fetch(CUTS_BASE_URL, {
@@ -44,6 +46,14 @@ const CardCreateProduct: React.FC<CardProps> = ({
             .then(data => setCuts(data))
             .catch(error => console.error('Error fetching cuts:', error));
     }, [token]);
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, setImage: (image: File | null) => void, setSelectedImage: (image: string | null) => void) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setImage(file);
+            setSelectedImage(URL.createObjectURL(file));
+        }
+    };
 
     return (
         <div className='h-full w-full flex justify-center items-center'>
@@ -100,29 +110,33 @@ const CardCreateProduct: React.FC<CardProps> = ({
                             <input
                                 type="file"
                                 id="image"
-                                onChange={(e) => {
-                                    if (e.target.files && e.target.files[0]) {
-                                        setImage(e.target.files[0]);
-                                    }
-                                }}
+                                onChange={(e) => handleImageChange(e, setImage, setSelectedImage)}
                                 required
-                                className="w-full shadow-md rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-amber-700 focus:shadow-amber-700 focus:ring-opacity-50"
+                                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-amber-100 file:text-amber-950 hover:file:bg-amber-200"
                             />
                         </div>
+                        {selectedImage && (
+                            <div className='text-start mt-4'>
+                                <p className='text-lg'>Imagen seleccionada</p>
+                                <img src={selectedImage} alt="Imagen seleccionada" className="h-20 w-20 rounded-xl mb-2" />
+                            </div>
+                        )}
                         <div className='text-lg md:text-xl'>
                             <label htmlFor="image2">Imagen 2</label>
                             <input
                                 type="file"
                                 id="image2"
-                                onChange={(e) => {
-                                    if (e.target.files && e.target.files[0]) {
-                                        setImage2(e.target.files[0]);
-                                    }
-                                }}
+                                onChange={(e) => handleImageChange(e, setImage2, setSelectedImage2)}
                                 required
-                                className="w-full shadow-md rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-amber-700 focus:shadow-amber-700 focus:ring-opacity-50"
+                                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-amber-100 file:text-amber-950 hover:file:bg-amber-200"
                             />
                         </div>
+                        {selectedImage2 && (
+                            <div className='text-start mt-4'>
+                                <p className='text-lg'>Imagen seleccionada</p>
+                                <img src={selectedImage2} alt="Imagen seleccionada" className="h-20 w-20 rounded-xl mb-2" />
+                            </div>
+                        )}
                         <div className="text-lg md:text-xl">
                             <label htmlFor="id_cut">Tipo de Corte</label>
                             <Select

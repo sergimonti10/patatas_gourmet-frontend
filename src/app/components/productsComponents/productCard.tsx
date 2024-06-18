@@ -1,5 +1,3 @@
-'use client'
-
 import { useEffect, useState } from "react";
 import { toast } from 'react-toastify';
 import { Card, CardFooter, Image, Button, Tooltip } from "@nextui-org/react";
@@ -50,7 +48,7 @@ export default function ProductCard({ product, user }: ProductCardProps) {
         const stars = [];
         for (let i = 1; i <= rating; i++) {
             stars.push(
-                <span className="text-amber-500">★</span>
+                <span key={i} className="text-amber-500">★</span>
             );
         }
         return stars;

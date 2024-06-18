@@ -338,7 +338,7 @@ export default function OrdersTable() {
                                 {paginatedItems.map((order) => (
                                     <TableRow className='cursor-pointer' key={order.id} onClick={(e) => { if (isPopoverOpen !== order.id) openOrderDetails(order.id); }}>
                                         <TableCell className="hover:bg-amber-50 text-sm">{order.id}</TableCell>
-                                        <TableCell className="hover:bg-amber-50 text-sm">{order.user.email}</TableCell>
+                                        <TableCell className="hover:bg-amber-50 text-sm">{order.user?.email}</TableCell>
                                         <TableCell className="hover:bg-amber-50 text-sm">{order.date_order}</TableCell>
                                         <TableCell className="hover:bg-amber-50 text-sm">{order.date_deliver || 'N/A'}</TableCell>
                                         <TableCell className="hover:bg-amber-50 text-sm">{order.status}</TableCell>
@@ -445,21 +445,21 @@ export default function OrdersTable() {
 
                                         <Card className="mb-6 bg-amber-50 text-amber-950">
                                             <CardHeader>
-                                                <Avatar isBordered radius="full" size="md" src={`${IMAGE_USERS_BASE_URL}${selectedOrder.user.image}`} />
+                                                <Avatar isBordered radius="full" size="md" src={`${IMAGE_USERS_BASE_URL}${selectedOrder.user?.image}`} />
                                                 <div className="ml-4">
-                                                    <h4 className="font-bold">{selectedOrder.user.name} {selectedOrder.user.surname}</h4>
-                                                    <p>{selectedOrder.user.email}</p>
+                                                    <h4 className="font-bold">{selectedOrder.user?.name} {selectedOrder.user?.surname}</h4>
+                                                    <p>{selectedOrder.user?.email}</p>
                                                 </div>
                                             </CardHeader>
                                             <CardBody>
-                                                <p><strong>Teléfono:</strong> {selectedOrder.user.phone}</p>
-                                                <p><strong>Código Postal:</strong> {selectedOrder.user.postal_code}</p>
-                                                <p><strong>Localidad:</strong> {selectedOrder.user.locality}</p>
-                                                <p><strong>Provincia:</strong> {selectedOrder.user.province}</p>
-                                                <p><strong>Calle:</strong> {selectedOrder.user.street}</p>
-                                                <p><strong>Número:</strong> {selectedOrder.user.number}</p>
-                                                <p><strong>Piso:</strong> {selectedOrder.user.floor}</p>
-                                                <p><strong>Escalera:</strong> {selectedOrder.user.staircase}</p>
+                                                <p><strong>Teléfono:</strong> {selectedOrder.user?.phone}</p>
+                                                <p><strong>Código Postal:</strong> {selectedOrder.user?.postal_code}</p>
+                                                <p><strong>Localidad:</strong> {selectedOrder.user?.locality}</p>
+                                                <p><strong>Provincia:</strong> {selectedOrder.user?.province}</p>
+                                                <p><strong>Calle:</strong> {selectedOrder.user?.street}</p>
+                                                <p><strong>Número:</strong> {selectedOrder.user?.number}</p>
+                                                <p><strong>Piso:</strong> {selectedOrder.user?.floor}</p>
+                                                <p><strong>Escalera:</strong> {selectedOrder.user?.staircase}</p>
                                             </CardBody>
                                         </Card>
                                     </ModalBody>
