@@ -1,8 +1,9 @@
 import useAuthStore from "../../store/authStore";
+import { PRODUCTS_BASE_URL } from "./links";
 
 export async function fetchProducts() {
   try {
-    const response = await fetch('http://127.0.0.1:8000/api/products', {
+    const response = await fetch(PRODUCTS_BASE_URL, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     });
