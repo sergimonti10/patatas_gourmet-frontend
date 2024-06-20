@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://apipatata.silverproyectspain.com';
+const API_BASE_URL = 'https://devoted-abundance-production.up.railway.app';
 // const API_BASE_URL = 'https://patataapi.silverprojectspain.com';
 
 // http://localhost:8000
