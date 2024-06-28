@@ -1,14 +1,15 @@
-const API_BASE_URL = 'https://devoted-abundance-production.up.railway.app';
-// const API_BASE_URL = 'https://patataapi.silverprojectspain.com';
+//const API_BASE_URL = 'https://devoted-abundance-production.up.railway.app';
 
-// http://localhost:8000
+const API_BASE_URL = 'https://apipatata.aztechnology.es';
+
+// const API_BASE_URL = 'http://127.0.0.1:8000';
 
 
 export const IMAGE_USERS_BASE_URL = `${API_BASE_URL}/storage/img_users/`;
 export const IMAGE_PRODUCTS_BASE_URL = `${API_BASE_URL}/storage/img_products/`;
 export const PRODUCTS_BASE_URL = `${API_BASE_URL}/api/products`;
 export const PRODUCT_ID_BASE_URL = `${API_BASE_URL}/api/products/`;
-export const CUTS_BASE_URL = `${API_BASE_URL}/api/cuts;`
+export const CUTS_BASE_URL = `${API_BASE_URL}/api/cuts`;
 export const CUT_ID_BASE_URL = `${API_BASE_URL}/api/cuts/`;
 export const USERS_BASE_URL = `${API_BASE_URL}/api/users`;
 export const USER_ID_BASE_URL = `${API_BASE_URL}/api/users/`;
