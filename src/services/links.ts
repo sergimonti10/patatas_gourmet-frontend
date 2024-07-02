@@ -1,8 +1,8 @@
-//const API_BASE_URL = 'https://devoted-abundance-production.up.railway.app';
+const API_BASE_URL = 'https://devoted-abundance-production.up.railway.app';
 
-const API_BASE_URL = 'https://apipatata.aztechnology.es';
+//const API_BASE_URL = 'https://apipatata.aztechnology.es';
 
-// const API_BASE_URL = 'http://127.0.0.1:8000';
+//const API_BASE_URL = 'http://127.0.0.1:8000';
 
 
 export const IMAGE_USERS_BASE_URL = `${API_BASE_URL}/storage/img_users/`;
