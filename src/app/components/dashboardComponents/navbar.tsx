@@ -68,18 +68,29 @@ export default function NavBar() {
     }, [user, token]);
 
     useEffect(() => {
+        console.log("User changed:", user);
+
         if (user) {
             setLinks((prevLinks) => {
-                if (!prevLinks.find(link => link.name === 'Carrito')) {
-                    return [...prevLinks, { name: 'Carrito', href: '/dashboard/shopping', icon: IoCart }];
+                console.log("Previous links:", prevLinks);
+
+                let updatedLinks = [...prevLinks];
+
+                if (!updatedLinks.find(link => link.name === 'Carrito')) {
+                    updatedLinks.push({ name: 'Carrito', href: '/dashboard/shopping', icon: IoCart });
                 }
-                if (!prevLinks.find(link => link.name === 'Pedidos')) {
-                    return [...prevLinks, { name: 'Pedidos', href: '/dashboard/orders', icon: TbTruckDelivery }];
+
+                if (!updatedLinks.find(link => link.name === 'Pedidos')) {
+                    updatedLinks.push({ name: 'Pedidos', href: '/dashboard/orders', icon: TbTruckDelivery });
                 }
-                return prevLinks;
+
+                console.log("Updated links:", updatedLinks);
+
+                return updatedLinks;
             });
         }
     }, [user]);
+
 
     useEffect(() => {
         if (user && role && role.includes('super-admin')) {

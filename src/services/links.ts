@@ -8,8 +8,7 @@ const API_BASE_URL = 'https://dry-ravine-20465-8bcffea04d89.herokuapp.com'
 
 
 export const IMAGE_USERS_BASE_URL = `${API_BASE_URL}/storage/img_users/`;
-// export const IMAGE_PRODUCTS_BASE_URL = `${API_BASE_URL}/storage/img_products/`;
-export const IMAGE_PRODUCTS_BASE_URL = `${API_BASE_URL}/storage/`;
+export const IMAGE_PRODUCTS_BASE_URL = `${API_BASE_URL}/storage/img_products/`;
 export const PRODUCTS_BASE_URL = `${API_BASE_URL}/api/products`;
 export const PRODUCT_ID_BASE_URL = `${API_BASE_URL}/api/products/`;
 export const CUTS_BASE_URL = `${API_BASE_URL}/api/cuts`;
