@@ -1,4 +1,6 @@
-const API_BASE_URL = 'https://devoted-abundance-production.up.railway.app';
+//const API_BASE_URL = 'https://devoted-abundance-production.up.railway.app';
+
+const API_BASE_URL = 'https://dry-ravine-20465-8bcffea04d89.herokuapp.com'
 
 //const API_BASE_URL = 'https://apipatata.aztechnology.es';
 
