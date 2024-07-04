@@ -39,6 +39,7 @@ export default function ProductCard({ product, user }: ProductCardProps) {
         if (!user) {
             toast.warning("Debe registrarse para realizar una compra.");
         } else {
+            console.log("Url imagen: ", product.image)
             addToCart(product);
             toast.success(`Producto añadido al carrito: ${product.name}`);
         }
@@ -72,7 +73,7 @@ export default function ProductCard({ product, user }: ProductCardProps) {
                     removeWrapper
                     alt={product.name}
                     className="z-0 w-full h-full object-cover cursor-pointer"
-                    src={`${IMAGE_PRODUCTS_BASE_URL}${product.image}`}
+                    src={product.image}
                     loading="lazy"
                 />
             </Link>
