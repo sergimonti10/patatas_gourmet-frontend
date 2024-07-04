@@ -12,32 +12,14 @@ const useCartStore = create((set) => ({
         }
     },
 
-    // addToCart: (product) => {
-    //     set((state) => {
-    //         const user = useUserStore.getState().user;
-    //         const newCart = [...state.cart, product];
-    //         localStorage.setItem(`cart_${user.id}`, JSON.stringify(newCart));
-    //         return { cart: newCart };
-    //     });
-    // },
-
     addToCart: (product) => {
         set((state) => {
             const user = useUserStore.getState().user;
-            const existingProduct = state.cart.find(item => item.id === product.id);
-            let newCart;
-            if (existingProduct) {
-                newCart = state.cart.map(item =>
-                    item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-                );
-            } else {
-                newCart = [...state.cart, { id: product.id, price: product.price, quantity: 1 }];
-            }
+            const newCart = [...state.cart, product];
             localStorage.setItem(`cart_${user.id}`, JSON.stringify(newCart));
             return { cart: newCart };
         });
     },
-
 
     removeFromCart: (productId) => {
         set((state) => {
