@@ -62,18 +62,11 @@ const useCartStore = create((set) => ({
         });
     },
 
-    // getCartCount: () => {
-    //     const user = useUserStore.getState().user;
-    //     const currentCart = JSON.parse(localStorage.getItem(`cart_${user.id}`)) || [];
-    //     return currentCart.length;
-    // },
-
     getCartCount: () => {
         const user = useUserStore.getState().user;
         const currentCart = JSON.parse(localStorage.getItem(`cart_${user.id}`)) || [];
-        return currentCart.reduce((count, item) => count + item.quantity, 0);
+        return currentCart.length;
     },
-
 
     clearCart: () => {
         set(() => {
