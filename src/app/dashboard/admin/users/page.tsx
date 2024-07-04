@@ -212,7 +212,7 @@ export default function UserTable() {
                             <TableRow key={user.id}>
                                 <TableCell className="hover:bg-gray-100">
                                     <Image
-                                        src={`${IMAGE_USERS_BASE_URL}${user.image}`}
+                                        src={user.image}
                                         alt={user.name}
                                         className='w-10 h-10 rounded-xl'
                                     />

@@ -158,7 +158,7 @@ const Reviews = ({ params }: ReviewSectionProps) => {
                                             isBordered
                                             radius="full"
                                             size="md"
-                                            src={review.user && review.user.image ? `${IMAGE_USERS_BASE_URL}${review.user.image}` : '/images/user.png'}
+                                            src={review.user && review.user.image ? `${review.user.image}` : '/images/user.png'}
                                         />
                                         <div className="flex flex-col gap-1 items-start justify-center">
                                             <h4 className="text-small font-semibold leading-none text-default-600">

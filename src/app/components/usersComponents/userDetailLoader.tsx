@@ -60,7 +60,7 @@ const UserDetailLoader = ({ params }: UserDetailProps) => {
                     isBlurred
                     width={240}
                     className="m-5"
-                    src={`${IMAGE_USERS_BASE_URL}${user?.image}`}
+                    src={user?.image}
                     alt={`${user?.name} ${user?.surname}`}
                 />
             </div>

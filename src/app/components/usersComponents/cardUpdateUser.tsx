@@ -57,7 +57,7 @@ const CardUpdateUser: React.FC<CardProps> = ({
                 setFloor(data.floor);
                 setStaircase(data.staircase);
                 setPhone(data.phone);
-                setUserImage(data.image ? `${IMAGE_USERS_BASE_URL}${data.image}` : "/images/user.png");
+                setUserImage(data.image ? `${data.image}` : "/images/user.png");
             })
             .catch(error => console.error('Error fetching user:', error));
     }, [userId, token, setName, setSurname, setPostalCode, setLocality, setProvince, setStreet, setNumber, setFloor, setStaircase, setPhone]);

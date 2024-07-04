@@ -55,7 +55,7 @@ export default function NavBar() {
 
                 const data = await response.json();
                 if (data.image) {
-                    setImgUser(`${IMAGE_USERS_BASE_URL}${data.image}`);
+                    setImgUser(`${data.image}`);
                 }
             } catch (error) {
                 console.error('Error fetching user:', error);

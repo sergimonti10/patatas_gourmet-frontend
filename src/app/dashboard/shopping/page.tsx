@@ -180,7 +180,7 @@ export default function CartPage() {
                                         isBordered
                                         radius="full"
                                         size="lg"
-                                        src={`${IMAGE_PRODUCTS_BASE_URL}${product.image}`}
+                                        src={product.image}
                                         alt={product.name}
                                         className="mr-4"
                                     />

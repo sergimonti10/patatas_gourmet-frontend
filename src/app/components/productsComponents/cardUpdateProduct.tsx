@@ -66,8 +66,8 @@ const CardUpdateProduct: React.FC<CardProps> = ({
                 setIdCut(data.id_cut);
                 setNameIdCut(data.cut.name);
                 setProductImages({
-                    image: `${IMAGE_PRODUCTS_BASE_URL}${data.image}`,
-                    image2: `${IMAGE_PRODUCTS_BASE_URL}${data.image2}`,
+                    image: `${data.image}`,
+                    image2: `${data.image2}`,
                 });
             })
             .catch(error => console.error('Error fetching product:', error));

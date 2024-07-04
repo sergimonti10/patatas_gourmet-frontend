@@ -74,13 +74,13 @@ const ProductDetailLoader = ({ params }: ProductDetailProps) => {
             <div className="relative m-5 w-1/2 h-auto mb-4 group">
                 <div className="relative overflow-hidden shadow-lg rounded-lg transition-all duration-300 ease-in-out group-hover:perspective-1000">
                     <img
-                        src={`${IMAGE_PRODUCTS_BASE_URL}${product?.image}`}
+                        src={product?.image}
                         alt={product?.name}
                         className="w-full h-auto object-cover rounded-lg shadow-lg transition-all duration-300 ease-in-out group-hover:rotate-x-10 group-hover:-translate-y-2.5 group-hover:translate-z-5"
                         loading="lazy"
                     />
                     <img
-                        src={`${IMAGE_PRODUCTS_BASE_URL}${product?.image2}`}
+                        src={product?.image2}
                         alt={product?.name}
                         className="absolute bottom-0 left-0 right-0 transform translate-y-10 opacity-0 transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:translate-y-0 z-10"
                         loading="lazy"

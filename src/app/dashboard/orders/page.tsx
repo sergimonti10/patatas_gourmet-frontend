@@ -429,7 +429,7 @@ export default function OrdersTable() {
                                             {selectedOrder.products.map(product => (
                                                 <Card key={product.id} className='bg-amber-50 text-amber-950'>
                                                     <CardHeader>
-                                                        <Avatar isBordered radius="full" size="lg" src={`${IMAGE_PRODUCTS_BASE_URL}${product.image}`} />
+                                                        <Avatar isBordered radius="full" size="lg" src={product.image} />
                                                         <div className="ml-4">
                                                             <h4 className="font-bold">{product.name}</h4>
                                                             <p><strong>Precio Unitario:</strong> {product.pivot.unit_price} €</p>
@@ -445,7 +445,7 @@ export default function OrdersTable() {
 
                                         <Card className="mb-6 bg-amber-50 text-amber-950">
                                             <CardHeader>
-                                                <Avatar isBordered radius="full" size="md" src={`${IMAGE_USERS_BASE_URL}${selectedOrder.user?.image}`} />
+                                                <Avatar isBordered radius="full" size="md" src={selectedOrder.user?.image} />
                                                 <div className="ml-4">
                                                     <h4 className="font-bold">{selectedOrder.user?.name} {selectedOrder.user?.surname}</h4>
                                                     <p>{selectedOrder.user?.email}</p>

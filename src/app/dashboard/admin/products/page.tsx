@@ -184,7 +184,7 @@ export default function ProductTable() {
                             <TableRow key={product.id}>
                                 <TableCell className="hover:bg-gray-100">
                                     <Image
-                                        src={`${IMAGE_PRODUCTS_BASE_URL}${product.image}`}
+                                        src={product.image}
                                         alt={product.name}
                                         className='w-10 h-10 rounded-xl'
                                     />
