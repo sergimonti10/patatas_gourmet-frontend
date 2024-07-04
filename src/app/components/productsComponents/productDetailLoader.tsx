@@ -51,6 +51,23 @@ const ProductDetailLoader = ({ params }: ProductDetailProps) => {
         return <LoadingCard />;
     }
 
+    // const handleAddToCart = () => {
+    //     if (!user) {
+    //         toast.warning("Debe registrarse para realizar una compra.");
+    //         return;
+    //     }
+    //     if (quantity === 0) {
+    //         toast.warning("Debe añadir al menos una unidad para añadir al carrito");
+    //         return;
+    //     }
+    //     if (product) {
+    //         for (let i = 0; i < quantity; i++) {
+    //             addToCart(product);
+    //         }
+    //         toast.success(`Añadido al carrito: ${quantity} x ${product.name}`);
+    //     }
+    // };
+
     const handleAddToCart = () => {
         if (!user) {
             toast.warning("Debe registrarse para realizar una compra.");
@@ -62,11 +79,12 @@ const ProductDetailLoader = ({ params }: ProductDetailProps) => {
         }
         if (product) {
             for (let i = 0; i < quantity; i++) {
-                addToCart(product);
+                addToCart({ id: product.id, price: product.price });
             }
             toast.success(`Añadido al carrito: ${quantity} x ${product.name}`);
         }
     };
+
 
     return (
         <div className="container mx-auto p-4 max-w-screen-lg">

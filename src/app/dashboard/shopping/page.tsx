@@ -87,14 +87,36 @@ export default function CartPage() {
     const handleConfirmPurchase = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const groupedProducts = cart.reduce((acc: { [key: number]: CartProduct }, item: Product) => {
+        // const groupedProducts = cart.reduce((acc: { [key: number]: CartProduct }, item: Product) => {
+        //     if (acc[item.id]) {
+        //         acc[item.id].quantity += 1;
+        //     } else {
+        //         acc[item.id] = {
+        //             id: item.id,
+        //             quantity: 1,
+        //             unit_price: parseFloat(item.price.toString())
+        //         };
+        //     }
+        //     return acc;
+        // }, {});
+
+        // const orderData = {
+        //     date_order: toMySQLDateFormat(new Date()),
+        //     status: 'pendiente',
+        //     total_price: getTotalPrice(),
+        //     total_products: cart.length,
+        //     id_user: user.id,
+        //     products: Object.values(groupedProducts)
+        // };
+
+        const groupedProducts = cart.reduce((acc: { [key: number]: CartProduct }, item: { id: number, price: number }) => {
             if (acc[item.id]) {
                 acc[item.id].quantity += 1;
             } else {
                 acc[item.id] = {
                     id: item.id,
                     quantity: 1,
-                    unit_price: parseFloat(item.price.toString())
+                    unit_price: item.price
                 };
             }
             return acc;
@@ -193,7 +215,8 @@ export default function CartPage() {
                                                 <CiCircleMinus />
                                             </button>
                                             <p className="text-sm text-default-600 mx-2">Cantidad: {quantity}</p>
-                                            <button onClick={() => addToCart(product)}>
+                                            {/* <button onClick={() => addToCart(product)}> */}
+                                            <button onClick={() => addToCart({ id: product.id, price: product.price })}>
                                                 <CiCirclePlus />
                                             </button>
                                         </div>
