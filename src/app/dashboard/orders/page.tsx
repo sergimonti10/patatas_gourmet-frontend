@@ -292,13 +292,29 @@ export default function OrdersTable() {
         setIsPopoverOpen(order.id);
     };
 
+    const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setRowsPerPage(Number(event.target.value));
+        setPage(1);
+    };
+
     return (
         <>
-            <DateRangePicker
-                label="Rango de fechas"
-                className="max-w-xs mb-4"
-                onChange={setDateRange}
-            />
+            <div className="flex justify-between items-center w-full mb-4">
+                <DateRangePicker
+                    label="Rango de fechas"
+                    className="max-w-xs mb-4"
+                    onChange={setDateRange}
+                />
+                <select
+                    value={rowsPerPage}
+                    onChange={handleRowsPerPageChange}
+                    className="border p-2 rounded"
+                >
+                    <option value={10}>10</option>
+                    <option value={20}>20</option>
+                    <option value={50}>50</option>
+                </select>
+            </div>
             <div className="w-full flex flex-col items-center justify-center m-5 p-4">
                 <h1 className="text-4xl font-bold mb-20">Panel de Pedidos</h1>
                 <Input
@@ -340,7 +356,7 @@ export default function OrdersTable() {
                             </TableHeader>
                             {isLoading ? (
                                 <TableBody>
-                                    {Array.from({ length: 5 }).map((_, index) => (
+                                    {Array.from({ length: 10 }).map((_, index) => (
                                         <TableRow key={index}>
                                             <TableCell className="hover:bg-amber-50 text-sm">
                                                 <div className="animate-pulse bg-gray-300 h-4 w-16 rounded"></div>
@@ -429,7 +445,6 @@ export default function OrdersTable() {
                     showShadow
                     className="py-4"
                 />
-
                 {selectedOrder && (
                     <Modal size="3xl" isOpen={isOpen} onClose={onClose} className={`overflow-auto max-h-[80vh] bg-slate-100 text-amber-950 ${fontClasses['font-unna']}`}>
                         <ModalContent>
