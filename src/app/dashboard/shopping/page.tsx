@@ -9,6 +9,7 @@ import { DOWNLOAD_PDF_BASE_URL, IMAGE_PRODUCTS_BASE_URL, ORDERS_BASE_URL } from 
 import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
 import { toast } from 'react-toastify';
 import useUserStore from '../../../../store/authStore';
+import { LoadingOverlay } from '@/app/components/general/skeletons';
 
 interface GroupedProduct {
     product: Product;
@@ -33,6 +34,7 @@ export default function CartPage() {
     const [expiryDate, setExpiryDate] = useState('');
     const [cvv, setCvv] = useState('');
     const [cardHolderName, setCardHolderName] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (!user) {
@@ -86,6 +88,7 @@ export default function CartPage() {
 
     const handleConfirmPurchase = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsLoading(true); // Mostrar pantalla de carga
 
         const groupedProducts = cart.reduce((acc: { [key: number]: CartProduct }, item: Product) => {
             if (acc[item.id]) {
@@ -126,42 +129,45 @@ export default function CartPage() {
                 setShowPaymentForm(false);
                 clearCart();
 
-                toast.promise(
-                    fetch(`${DOWNLOAD_PDF_BASE_URL}/${order.id}`, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Accept': 'application/pdf',
-                        },
-                    }).then(async (pdfResponse) => {
-                        if (pdfResponse.ok) {
-                            const blob = await pdfResponse.blob();
-                            const url = window.URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = `factura_patatas-gourmet_${order.id}.pdf`;
-                            document.body.appendChild(a);
-                            a.click();
-                            a.remove();
-                            window.URL.revokeObjectURL(url);
-                            return "Factura generada correctamente";
-                        } else {
-                            throw new Error('Error al generar la factura');
-                        }
-                    }),
-                    {
-                        pending: 'Generando factura...',
-                        success: 'Factura generada correctamente',
-                        error: 'Error al generar la factura',
-                    }
-                );
+                // toast.promise(
+                //     fetch(`${DOWNLOAD_PDF_BASE_URL}/${order.id}`, {
+                //         method: 'GET',
+                //         headers: {
+                //             'Authorization': `Bearer ${token}`,
+                //             'Accept': 'application/pdf',
+                //         },
+                //     }).then(async (pdfResponse) => {
+                //         if (pdfResponse.ok) {
+                //             const blob = await pdfResponse.blob();
+                //             const url = window.URL.createObjectURL(blob);
+                //             const a = document.createElement('a');
+                //             a.href = url;
+                //             a.download = `factura_patatas-gourmet_${order.id}.pdf`;
+                //             document.body.appendChild(a);
+                //             a.click();
+                //             a.remove();
+                //             window.URL.revokeObjectURL(url);
+                //             return "Factura generada correctamente";
+                //         } else {
+                //             throw new Error('Error al generar la factura');
+                //         }
+                //     }),
+                //     {
+                //         pending: 'Generando factura...',
+                //         success: 'Factura generada correctamente',
+                //         error: 'Error al generar la factura',
+                //     }
+                // );
             } else {
                 toast.error('Error al realizar la compra');
             }
         } catch (error) {
             toast.error('Error al realizar la compra');
+        } finally {
+            setIsLoading(false); // Ocultar pantalla de carga
         }
     };
+
 
     return (
         <div className="container mx-auto p-2 overflow-auto">
@@ -235,65 +241,68 @@ export default function CartPage() {
                 <div className="bg-white p-8 rounded-lg shadow-lg max-w-md mx-auto">
                     <h2 className="text-2xl font-bold mb-2">Detalles de Pago</h2>
                     <h4 className="font-bold italic mb-4">La dirección del envío es la que figura en tu perfil</h4>
-                    <form className="space-y-4" onSubmit={handleConfirmPurchase}>
-                        <div>
-                            <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700">
-                                Número de Tarjeta
-                            </label>
-                            <input
-                                id="cardNumber"
-                                type="number"
-                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                value={cardNumber}
-                                onChange={(e) => setCardNumber(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="expiryDate" className="block text-sm font-medium text-gray-700">
-                                Fecha de Caducidad (MM/YY)
-                            </label>
-                            <input
-                                id="expiryDate"
-                                type="number"
-                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                value={expiryDate}
-                                onChange={(e) => setExpiryDate(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="cvv" className="block text-sm font-medium text-gray-700">
-                                Código CVV
-                            </label>
-                            <input
-                                id="cvv"
-                                type="number"
-                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                value={cvv}
-                                onChange={(e) => setCvv(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="cardHolderName" className="block text-sm font-medium text-gray-700">
-                                Nombre del Titular
-                            </label>
-                            <input
-                                id="cardHolderName"
-                                type="text"
-                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                value={cardHolderName}
-                                onChange={(e) => setCardHolderName(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div className="flex justify-end">
-                            <Button color="warning" className="text-white" type="submit">
-                                Confirmar Compra
-                            </Button>
-                        </div>
-                    </form>
+                    <div className={`relative ${isLoading ? 'pointer-events-none' : ''}`}>
+                        {isLoading && <LoadingOverlay />}
+                        <form className="space-y-4" onSubmit={handleConfirmPurchase}>
+                            <div>
+                                <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700">
+                                    Número de Tarjeta
+                                </label>
+                                <input
+                                    id="cardNumber"
+                                    type="number"
+                                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                    value={cardNumber}
+                                    onChange={(e) => setCardNumber(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="expiryDate" className="block text-sm font-medium text-gray-700">
+                                    Fecha de Caducidad (MM/YY)
+                                </label>
+                                <input
+                                    id="expiryDate"
+                                    type="number"
+                                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                    value={expiryDate}
+                                    onChange={(e) => setExpiryDate(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="cvv" className="block text-sm font-medium text-gray-700">
+                                    Código CVV
+                                </label>
+                                <input
+                                    id="cvv"
+                                    type="number"
+                                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                    value={cvv}
+                                    onChange={(e) => setCvv(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="cardHolderName" className="block text-sm font-medium text-gray-700">
+                                    Nombre del Titular
+                                </label>
+                                <input
+                                    id="cardHolderName"
+                                    type="text"
+                                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                    value={cardHolderName}
+                                    onChange={(e) => setCardHolderName(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="flex justify-end">
+                                <Button color="warning" className="text-white" type="submit">
+                                    Confirmar Compra
+                                </Button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

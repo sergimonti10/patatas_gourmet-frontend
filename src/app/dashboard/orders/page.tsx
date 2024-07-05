@@ -34,6 +34,7 @@ import { toast } from 'react-toastify';
 import { Modal, ModalContent, ModalHeader, ModalBody, DateRangePicker, RangeValue, DateValue } from "@nextui-org/react";
 import { FcCancel } from "react-icons/fc";
 import { fontClasses } from '@/app/components/fonts';
+import { LoadingTable } from '@/app/components/general/skeletons';
 
 export default function OrdersTable() {
     const [orders, setOrders] = useState<Order[]>([]);
@@ -50,6 +51,7 @@ export default function OrdersTable() {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [dateRange, setDateRange] = useState<RangeValue<DateValue> | null>(null);
     const [isPopoverOpen, setIsPopoverOpen] = useState<number | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         if (!user) {
@@ -68,8 +70,10 @@ export default function OrdersTable() {
                 if (role.includes('user')) {
                     const filteredOrders = data.filter((order: Order) => order.id_user === user.id);
                     setOrders(filteredOrders);
+                    setIsLoading(false);
                 } else {
                     setOrders(data);
+                    setIsLoading(false);
                 }
             })
             .catch(error => console.error('Error fetching orders:', error));
@@ -334,54 +338,82 @@ export default function OrdersTable() {
                                 </TableColumn>
                                 <TableColumn className='text-md text-center'>Acciones</TableColumn>
                             </TableHeader>
-                            <TableBody>
-                                {paginatedItems.map((order) => (
-                                    <TableRow className='cursor-pointer' key={order.id} onClick={(e) => { if (isPopoverOpen !== order.id) openOrderDetails(order.id); }}>
-                                        <TableCell className="hover:bg-amber-50 text-sm">{order.id}</TableCell>
-                                        <TableCell className="hover:bg-amber-50 text-sm">{order.user?.email}</TableCell>
-                                        <TableCell className="hover:bg-amber-50 text-sm">{order.date_order}</TableCell>
-                                        <TableCell className="hover:bg-amber-50 text-sm">{order.date_deliver || 'N/A'}</TableCell>
-                                        <TableCell className="hover:bg-amber-50 text-sm">{order.status}</TableCell>
-                                        <TableCell className="hover:bg-amber-50 text-center">
-                                            {role && role.includes('super-admin') ? (
-                                                <Tooltip content="Eliminar">
-                                                    <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); cancelOrder(order.id); }}>
-                                                        <CiTrash className="text-red-700 h-4 w-4" />
-                                                    </Button>
-                                                </Tooltip>
-                                            ) : role && role.includes('admin') && (order.status !== 'entregado' && order.status !== 'cancelado') ? (
-                                                <Tooltip content="Actualizar estado">
-                                                    <span>
-                                                        <Popover isOpen={isPopoverOpen === order.id} onOpenChange={(open) => setIsPopoverOpen(open ? order.id : null)} showArrow offset={10} placement="bottom" backdrop="blur">
-                                                            <PopoverTrigger>
-                                                                <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); setIsPopoverOpen(order.id); }}>
-                                                                    <IoMdMore className="text-amber-900 h-4 w-4" />
-                                                                </Button>
-                                                            </PopoverTrigger>
-                                                            <PopoverContent className="w-[240px]">
-                                                                <div className="p-3">
-                                                                    <p>Actualizar estado del pedido {order.id}</p>
-                                                                    <div className="flex flex-col mt-4 gap-1">
-                                                                        <Button color='warning' onClick={() => handleStatusChange(order.id, 'procesando')} variant="flat">Procesando</Button>
-                                                                        <Button color='warning' onClick={() => handleStatusChange(order.id, 'reparto')} variant="flat">Reparto</Button>
-                                                                        <Button color='warning' onClick={() => handleStatusChange(order.id, 'entregado')} variant="flat">Entregado</Button>
+                            {isLoading ? (
+                                <TableBody>
+                                    {Array.from({ length: 5 }).map((_, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell className="hover:bg-amber-50 text-sm">
+                                                <div className="animate-pulse bg-gray-300 h-4 w-16 rounded"></div>
+                                            </TableCell>
+                                            <TableCell className="hover:bg-amber-50 text-sm">
+                                                <div className="animate-pulse bg-gray-300 h-4 w-32 rounded"></div>
+                                            </TableCell>
+                                            <TableCell className="hover:bg-amber-50 text-sm">
+                                                <div className="animate-pulse bg-gray-300 h-4 w-24 rounded"></div>
+                                            </TableCell>
+                                            <TableCell className="hover:bg-amber-50 text-sm">
+                                                <div className="animate-pulse bg-gray-300 h-4 w-24 rounded"></div>
+                                            </TableCell>
+                                            <TableCell className="hover:bg-amber-50 text-sm">
+                                                <div className="animate-pulse bg-gray-300 h-4 w-20 rounded"></div>
+                                            </TableCell>
+                                            <TableCell className="hover:bg-amber-50 text-center">
+                                                <div className="flex justify-center">
+                                                    <div className="animate-pulse bg-gray-300 h-8 w-8 rounded-full"></div>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>) : (
+                                <TableBody>
+                                    {paginatedItems.map((order) => (
+                                        <TableRow className='cursor-pointer' key={order.id} onClick={(e) => { if (isPopoverOpen !== order.id) openOrderDetails(order.id); }}>
+                                            <TableCell className="hover:bg-amber-50 text-sm">{order.id}</TableCell>
+                                            <TableCell className="hover:bg-amber-50 text-sm">{order.user?.email}</TableCell>
+                                            <TableCell className="hover:bg-amber-50 text-sm">{order.date_order}</TableCell>
+                                            <TableCell className="hover:bg-amber-50 text-sm">{order.date_deliver || 'N/A'}</TableCell>
+                                            <TableCell className="hover:bg-amber-50 text-sm">{order.status}</TableCell>
+                                            <TableCell className="hover:bg-amber-50 text-center">
+                                                {role && role.includes('super-admin') ? (
+                                                    <Tooltip content="Eliminar">
+                                                        <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); cancelOrder(order.id); }}>
+                                                            <CiTrash className="text-red-700 h-4 w-4" />
+                                                        </Button>
+                                                    </Tooltip>
+                                                ) : role && role.includes('admin') && (order.status !== 'entregado' && order.status !== 'cancelado') ? (
+                                                    <Tooltip content="Actualizar estado">
+                                                        <span>
+                                                            <Popover isOpen={isPopoverOpen === order.id} onOpenChange={(open) => setIsPopoverOpen(open ? order.id : null)} showArrow offset={10} placement="bottom" backdrop="blur">
+                                                                <PopoverTrigger>
+                                                                    <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); setIsPopoverOpen(order.id); }}>
+                                                                        <IoMdMore className="text-amber-900 h-4 w-4" />
+                                                                    </Button>
+                                                                </PopoverTrigger>
+                                                                <PopoverContent className="w-[240px]">
+                                                                    <div className="p-3">
+                                                                        <p>Actualizar estado del pedido {order.id}</p>
+                                                                        <div className="flex flex-col mt-4 gap-1">
+                                                                            <Button color='warning' onClick={() => handleStatusChange(order.id, 'procesando')} variant="flat">Procesando</Button>
+                                                                            <Button color='warning' onClick={() => handleStatusChange(order.id, 'reparto')} variant="flat">Reparto</Button>
+                                                                            <Button color='warning' onClick={() => handleStatusChange(order.id, 'entregado')} variant="flat">Entregado</Button>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            </PopoverContent>
-                                                        </Popover>
-                                                    </span>
-                                                </Tooltip>
-                                            ) : role && role.includes('user') && (order.status === 'pendiente') ? (
-                                                <Tooltip content="Cancelar">
-                                                    <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); setOrderToCancelled(order.id); }}>
-                                                        <FcCancel className="h-4 w-4" />
-                                                    </Button>
-                                                </Tooltip>
-                                            ) : null}
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
+                                                                </PopoverContent>
+                                                            </Popover>
+                                                        </span>
+                                                    </Tooltip>
+                                                ) : role && role.includes('user') && (order.status === 'pendiente') ? (
+                                                    <Tooltip content="Cancelar">
+                                                        <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); setOrderToCancelled(order.id); }}>
+                                                            <FcCancel className="h-4 w-4" />
+                                                        </Button>
+                                                    </Tooltip>
+                                                ) : null}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            )}
                         </Table>
                     )}
                 </div>
@@ -405,7 +437,7 @@ export default function OrdersTable() {
                                 <>
                                     <ModalHeader className='flex justify-between items-center'>
                                         <h2>Detalles del Pedido #{selectedOrder.id}</h2>
-                                        <Button
+                                        {/* <Button
                                             size="lg"
                                             color='warning'
                                             variant='shadow'
@@ -413,7 +445,7 @@ export default function OrdersTable() {
                                             onClick={() => generateInvoice(selectedOrder.id)}
                                         >
                                             Generar factura
-                                        </Button>
+                                        </Button> */}
                                     </ModalHeader>
                                     <ModalBody>
                                         <p><strong>Fecha de Pedido:</strong> {selectedOrder.date_order}</p>

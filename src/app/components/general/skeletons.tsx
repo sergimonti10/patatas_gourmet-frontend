@@ -1,7 +1,7 @@
 // LoadingWave.jsx
 import React from 'react';
 import { fontClasses } from '../fonts';
-import { Card, Skeleton } from "@nextui-org/react";
+import { Card, Skeleton, TableBody, TableCell, TableRow } from "@nextui-org/react";
 
 const waveAnimation = 'inline-block animate-wave';
 
@@ -46,3 +46,46 @@ export function LoadingCard() {
     </div>
   );
 }
+
+export function LoadingTable() {
+  return (
+    <TableBody>
+      {Array.from({ length: 5 }).map((_, index) => (
+        <TableRow key={index}>
+          <TableCell className="hover:bg-amber-50 text-sm">
+            <div className="animate-pulse bg-gray-300 h-4 w-16 rounded"></div>
+          </TableCell>
+          <TableCell className="hover:bg-amber-50 text-sm">
+            <div className="animate-pulse bg-gray-300 h-4 w-32 rounded"></div>
+          </TableCell>
+          <TableCell className="hover:bg-amber-50 text-sm">
+            <div className="animate-pulse bg-gray-300 h-4 w-24 rounded"></div>
+          </TableCell>
+          <TableCell className="hover:bg-amber-50 text-sm">
+            <div className="animate-pulse bg-gray-300 h-4 w-24 rounded"></div>
+          </TableCell>
+          <TableCell className="hover:bg-amber-50 text-sm">
+            <div className="animate-pulse bg-gray-300 h-4 w-20 rounded"></div>
+          </TableCell>
+          <TableCell className="hover:bg-amber-50 text-center">
+            <div className="flex justify-center">
+              <div className="animate-pulse bg-gray-300 h-8 w-8 rounded-full"></div>
+            </div>
+          </TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  )
+}
+
+export function LoadingOverlay() {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="text-center">
+        <div className="animate-pulse text-white text-lg">Confirmando compra...</div>
+      </div>
+    </div>
+  )
+}
+
+
