@@ -47,7 +47,7 @@ export default function DashboardPage() {
                                     removeWrapper
                                     alt="Instalaciones"
                                     src="images/instalaciones.jpg"
-                                    className="max-w-[150px] max-h-[150px] sm:max-w-[300px] h-full object-cover"
+                                    className="max-w-[150px] max-h-[150px] sm:max-w-[300px] sm:max-h-[300px] h-full object-cover"
                                     loading="lazy"
                                 />
                                 <div className="w-full sm:w-1/2 p-4">
@@ -64,7 +64,7 @@ export default function DashboardPage() {
                                     removeWrapper
                                     alt="Maquinaria"
                                     src="images/maquinaria.jpg"
-                                    className="max-w-[150px] max-h-[150px] sm:max-w-[300px] h-full object-cover"
+                                    className="max-w-[150px] max-h-[150px] sm:max-w-[300px] sm:max-h-[300px] h-full object-cover"
                                     loading="lazy"
                                 />
                                 <div className="w-1/2 p-4">
@@ -81,7 +81,7 @@ export default function DashboardPage() {
                                     removeWrapper
                                     alt="Limpieza"
                                     src="images/limpieza.jpg"
-                                    className="max-w-[150px] max-h-[150px] sm:max-w-[300px] h-full object-cover"
+                                    className="max-w-[150px] max-h-[150px] sm:max-w-[300px] sm:max-h-[300px] h-full object-cover"
                                     loading="lazy"
                                 />
                                 <div className="w-1/2 p-4">
@@ -98,7 +98,7 @@ export default function DashboardPage() {
                                     removeWrapper
                                     alt="Personal Profesional"
                                     src="images/personal.jpg"
-                                    className="max-w-[150px] max-h-[150px] sm:max-w-[300px] h-full object-cover"
+                                    className="max-w-[150px] max-h-[150px] sm:max-w-[300px] sm:max-h-[300px] h-full object-cover"
                                     loading="lazy"
                                 />
                                 <div className="w-1/2 p-4">
@@ -115,7 +115,7 @@ export default function DashboardPage() {
                                     removeWrapper
                                     alt="Años de Experiencia"
                                     src="images/tiempo.jpg"
-                                    className="max-w-[150px] max-h-[150px] sm:max-w-[300px] h-full object-cover"
+                                    className="max-w-[150px] max-h-[150px] sm:max-w-[300px] sm:max-h-[300px] h-full object-cover"
                                     loading="lazy"
                                 />
                                 <div className="w-1/2 p-4">
