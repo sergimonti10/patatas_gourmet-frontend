@@ -145,7 +145,7 @@ export default function NavBar() {
                 </NavbarBrand>
             </NavbarContent>
 
-            <NavbarContent className="hidden sm:flex lg:flex-2 gap-4" justify="start">
+            <NavbarContent className="hidden sm:flex lg:flex-2 gap-4" justify="center">
                 {links.map((link, index) => (
                     <React.Fragment key={link.name}>
                         {index > 0 && <Divider orientation='vertical' className='h-1/2' />}

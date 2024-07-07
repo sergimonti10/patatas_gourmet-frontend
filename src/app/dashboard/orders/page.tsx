@@ -332,106 +332,102 @@ export default function OrdersTable() {
                     onChange={handleSearchChange}
                 />
                 <div className="w-full overflow-auto">
-                    {Array.isArray(role) && role.includes('user') && orders.length === 0 ? (
-                        <h3 className='text-center m-10'>¡Todavía no tienes ningún pedido, realiza tu primer pedido!</h3>
-                    ) : (
-                        <Table>
-                            <TableHeader>
-                                <TableColumn onClick={() => handleSortChange('id')} className='cursor-pointer text-md'>
-                                    Número de Pedido {sortDescriptor.column === 'id' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
-                                </TableColumn>
-                                <TableColumn onClick={() => handleSortChange('id_user')} className='cursor-pointer text-md'>
-                                    Usuario {sortDescriptor.column === 'id_user' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
-                                </TableColumn>
-                                <TableColumn onClick={() => handleSortChange('date_order')} className='cursor-pointer text-md'>
-                                    Fecha de Pedido {sortDescriptor.column === 'date_order' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
-                                </TableColumn>
-                                <TableColumn onClick={() => handleSortChange('date_deliver')} className='cursor-pointer text-md'>
-                                    Fecha de Entrega {sortDescriptor.column === 'date_deliver' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
-                                </TableColumn>
-                                <TableColumn onClick={() => handleSortChange('status')} className='cursor-pointer text-md'>
-                                    Estado {sortDescriptor.column === 'status' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
-                                </TableColumn>
-                                <TableColumn className='text-md text-center'>Acciones</TableColumn>
-                            </TableHeader>
-                            {isLoading ? (
-                                <TableBody>
-                                    {Array.from({ length: 10 }).map((_, index) => (
-                                        <TableRow key={index}>
-                                            <TableCell className="hover:bg-amber-50 text-sm">
-                                                <div className="animate-pulse bg-gray-300 h-4 w-16 rounded"></div>
-                                            </TableCell>
-                                            <TableCell className="hover:bg-amber-50 text-sm">
-                                                <div className="animate-pulse bg-gray-300 h-4 w-32 rounded"></div>
-                                            </TableCell>
-                                            <TableCell className="hover:bg-amber-50 text-sm">
-                                                <div className="animate-pulse bg-gray-300 h-4 w-24 rounded"></div>
-                                            </TableCell>
-                                            <TableCell className="hover:bg-amber-50 text-sm">
-                                                <div className="animate-pulse bg-gray-300 h-4 w-24 rounded"></div>
-                                            </TableCell>
-                                            <TableCell className="hover:bg-amber-50 text-sm">
-                                                <div className="animate-pulse bg-gray-300 h-4 w-20 rounded"></div>
-                                            </TableCell>
-                                            <TableCell className="hover:bg-amber-50 text-center">
-                                                <div className="flex justify-center">
-                                                    <div className="animate-pulse bg-gray-300 h-8 w-8 rounded-full"></div>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>) : (
-                                <TableBody>
-                                    {paginatedItems.map((order) => (
-                                        <TableRow className='cursor-pointer' key={order.id} onClick={(e) => { if (isPopoverOpen !== order.id) openOrderDetails(order.id); }}>
-                                            <TableCell className="hover:bg-amber-50 text-sm">{order.id}</TableCell>
-                                            <TableCell className="hover:bg-amber-50 text-sm">{order.user?.email}</TableCell>
-                                            <TableCell className="hover:bg-amber-50 text-sm">{order.date_order}</TableCell>
-                                            <TableCell className="hover:bg-amber-50 text-sm">{order.date_deliver || 'N/A'}</TableCell>
-                                            <TableCell className="hover:bg-amber-50 text-sm">{order.status}</TableCell>
-                                            <TableCell className="hover:bg-amber-50 text-center">
-                                                {role && role.includes('super-admin') ? (
-                                                    <Tooltip content="Eliminar">
-                                                        <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); cancelOrder(order.id); }}>
-                                                            <CiTrash className="text-red-700 h-4 w-4" />
-                                                        </Button>
-                                                    </Tooltip>
-                                                ) : role && role.includes('admin') && (order.status !== 'entregado' && order.status !== 'cancelado') ? (
-                                                    <Tooltip content="Actualizar estado">
-                                                        <span>
-                                                            <Popover isOpen={isPopoverOpen === order.id} onOpenChange={(open) => setIsPopoverOpen(open ? order.id : null)} showArrow offset={10} placement="bottom" backdrop="blur">
-                                                                <PopoverTrigger>
-                                                                    <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); setIsPopoverOpen(order.id); }}>
-                                                                        <IoMdMore className="text-amber-900 h-4 w-4" />
-                                                                    </Button>
-                                                                </PopoverTrigger>
-                                                                <PopoverContent className="w-[240px]">
-                                                                    <div className="p-3">
-                                                                        <p>Actualizar estado del pedido {order.id}</p>
-                                                                        <div className="flex flex-col mt-4 gap-1">
-                                                                            <Button color='warning' onClick={() => handleStatusChange(order.id, 'procesando')} variant="flat">Procesando</Button>
-                                                                            <Button color='warning' onClick={() => handleStatusChange(order.id, 'reparto')} variant="flat">Reparto</Button>
-                                                                            <Button color='warning' onClick={() => handleStatusChange(order.id, 'entregado')} variant="flat">Entregado</Button>
-                                                                        </div>
+                    <Table>
+                        <TableHeader>
+                            <TableColumn onClick={() => handleSortChange('id')} className='cursor-pointer text-md'>
+                                Número de Pedido {sortDescriptor.column === 'id' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
+                            </TableColumn>
+                            <TableColumn onClick={() => handleSortChange('id_user')} className='cursor-pointer text-md'>
+                                Usuario {sortDescriptor.column === 'id_user' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
+                            </TableColumn>
+                            <TableColumn onClick={() => handleSortChange('date_order')} className='cursor-pointer text-md'>
+                                Fecha de Pedido {sortDescriptor.column === 'date_order' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
+                            </TableColumn>
+                            <TableColumn onClick={() => handleSortChange('date_deliver')} className='cursor-pointer text-md'>
+                                Fecha de Entrega {sortDescriptor.column === 'date_deliver' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
+                            </TableColumn>
+                            <TableColumn onClick={() => handleSortChange('status')} className='cursor-pointer text-md'>
+                                Estado {sortDescriptor.column === 'status' && (sortDescriptor.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
+                            </TableColumn>
+                            <TableColumn className='text-md text-center'>Acciones</TableColumn>
+                        </TableHeader>
+                        {isLoading ? (
+                            <TableBody>
+                                {Array.from({ length: 10 }).map((_, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell className="hover:bg-amber-50 text-sm">
+                                            <div className="animate-pulse bg-gray-300 h-4 w-16 rounded"></div>
+                                        </TableCell>
+                                        <TableCell className="hover:bg-amber-50 text-sm">
+                                            <div className="animate-pulse bg-gray-300 h-4 w-32 rounded"></div>
+                                        </TableCell>
+                                        <TableCell className="hover:bg-amber-50 text-sm">
+                                            <div className="animate-pulse bg-gray-300 h-4 w-24 rounded"></div>
+                                        </TableCell>
+                                        <TableCell className="hover:bg-amber-50 text-sm">
+                                            <div className="animate-pulse bg-gray-300 h-4 w-24 rounded"></div>
+                                        </TableCell>
+                                        <TableCell className="hover:bg-amber-50 text-sm">
+                                            <div className="animate-pulse bg-gray-300 h-4 w-20 rounded"></div>
+                                        </TableCell>
+                                        <TableCell className="hover:bg-amber-50 text-center">
+                                            <div className="flex justify-center">
+                                                <div className="animate-pulse bg-gray-300 h-8 w-8 rounded-full"></div>
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>) : (
+                            <TableBody>
+                                {paginatedItems.map((order) => (
+                                    <TableRow className='cursor-pointer' key={order.id} onClick={(e) => { if (isPopoverOpen !== order.id) openOrderDetails(order.id); }}>
+                                        <TableCell className="hover:bg-amber-50 text-sm">{order.id}</TableCell>
+                                        <TableCell className="hover:bg-amber-50 text-sm">{order.user?.email}</TableCell>
+                                        <TableCell className="hover:bg-amber-50 text-sm">{order.date_order}</TableCell>
+                                        <TableCell className="hover:bg-amber-50 text-sm">{order.date_deliver || 'N/A'}</TableCell>
+                                        <TableCell className="hover:bg-amber-50 text-sm">{order.status}</TableCell>
+                                        <TableCell className="hover:bg-amber-50 text-center">
+                                            {role && role.includes('super-admin') ? (
+                                                <Tooltip content="Eliminar">
+                                                    <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); cancelOrder(order.id); }}>
+                                                        <CiTrash className="text-red-700 h-4 w-4" />
+                                                    </Button>
+                                                </Tooltip>
+                                            ) : role && role.includes('admin') && (order.status !== 'entregado' && order.status !== 'cancelado') ? (
+                                                <Tooltip content="Actualizar estado">
+                                                    <span>
+                                                        <Popover isOpen={isPopoverOpen === order.id} onOpenChange={(open) => setIsPopoverOpen(open ? order.id : null)} showArrow offset={10} placement="bottom" backdrop="blur">
+                                                            <PopoverTrigger>
+                                                                <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); setIsPopoverOpen(order.id); }}>
+                                                                    <IoMdMore className="text-amber-900 h-4 w-4" />
+                                                                </Button>
+                                                            </PopoverTrigger>
+                                                            <PopoverContent className="w-[240px]">
+                                                                <div className="p-3">
+                                                                    <p>Actualizar estado del pedido {order.id}</p>
+                                                                    <div className="flex flex-col mt-4 gap-1">
+                                                                        <Button color='warning' onClick={() => handleStatusChange(order.id, 'procesando')} variant="flat">Procesando</Button>
+                                                                        <Button color='warning' onClick={() => handleStatusChange(order.id, 'reparto')} variant="flat">Reparto</Button>
+                                                                        <Button color='warning' onClick={() => handleStatusChange(order.id, 'entregado')} variant="flat">Entregado</Button>
                                                                     </div>
-                                                                </PopoverContent>
-                                                            </Popover>
-                                                        </span>
-                                                    </Tooltip>
-                                                ) : role && role.includes('user') && (order.status === 'pendiente') ? (
-                                                    <Tooltip content="Cancelar">
-                                                        <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); setOrderToCancelled(order.id); }}>
-                                                            <FcCancel className="h-4 w-4" />
-                                                        </Button>
-                                                    </Tooltip>
-                                                ) : null}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            )}
-                        </Table>
-                    )}
+                                                                </div>
+                                                            </PopoverContent>
+                                                        </Popover>
+                                                    </span>
+                                                </Tooltip>
+                                            ) : role && role.includes('user') && (order.status === 'pendiente') ? (
+                                                <Tooltip content="Cancelar">
+                                                    <Button isIconOnly radius="full" size="sm" variant="light" onClick={(e) => { e.stopPropagation(); setOrderToCancelled(order.id); }}>
+                                                        <FcCancel className="h-4 w-4" />
+                                                    </Button>
+                                                </Tooltip>
+                                            ) : null}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        )}
+                    </Table>
                 </div>
                 <Pagination
                     total={totalPages}
