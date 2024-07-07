@@ -13,13 +13,14 @@ interface CutDetailProps {
 }
 
 export default function CutViewPage({ params }: CutDetailProps) {
-    const { user } = useUserStore();
+    const { user, roles } = useUserStore();
 
     useEffect(() => {
-        if (!user) {
+        if (!user || !roles.includes('super-admin')) {
             window.location.href = '/';
         }
-    }, [user]);
+    }, [user, roles]);
+
 
     return (
         <div className="w-auto h-auto">

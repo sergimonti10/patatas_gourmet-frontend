@@ -9,13 +9,14 @@ import CreateCut from "@/app/components/cutComponents/createCut";
 export default function RegisterPage() {
     const router = useRouter();
 
-    const { user } = useUserStore();
+    const { user, roles } = useUserStore();
 
     useEffect(() => {
-        if (!user) {
+        if (!user || !roles.includes('super-admin')) {
             window.location.href = '/';
         }
-    }, [user]);
+    }, [user, roles]);
+
 
     return (
         <div className="w-auto h-auto">

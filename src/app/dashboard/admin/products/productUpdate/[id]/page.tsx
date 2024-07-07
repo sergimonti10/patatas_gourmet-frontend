@@ -17,13 +17,14 @@ interface ProductDetailProps {
 export default function ProductUpdatePage({ params }: ProductDetailProps) {
     const router = useRouter();
 
-    const { user } = useUserStore();
+    const { user, roles } = useUserStore();
 
     useEffect(() => {
-        if (!user) {
+        if (!user || !roles.includes('super-admin')) {
             window.location.href = '/';
         }
-    }, [user]);
+    }, [user, roles]);
+
 
     return (
         <div className="w-auto h-auto">

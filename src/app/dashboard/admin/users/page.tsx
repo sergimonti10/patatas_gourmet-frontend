@@ -39,15 +39,16 @@ export default function UserTable() {
         direction: "ascending",
     });
     const router = useRouter();
-    const { token, user } = useUserStore();
+    const { token, user, roles } = useUserStore();
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [isPopoverOpen, setIsPopoverOpen] = useState<number | null>(null);
 
     useEffect(() => {
-        if (!user) {
+        if (!user || !roles.includes('super-admin')) {
             window.location.href = '/';
         }
-    }, [user]);
+    }, [user, roles]);
+    
 
     useEffect(() => {
         fetch(USERS_BASE_URL, {

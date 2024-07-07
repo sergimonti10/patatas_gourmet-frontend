@@ -38,15 +38,16 @@ export default function CutTable() {
         direction: "ascending",
     });
     const router = useRouter();
-    const { token, user } = useUserStore();
+    const { token, user, roles } = useUserStore();
     const [selectedCut, setSelectedCut] = useState<Cut | null>(null);
     const [isPopoverOpen, setIsPopoverOpen] = useState<number | null>(null);
 
     useEffect(() => {
-        if (!user) {
+        if (!user || !roles.includes('super-admin')) {
             window.location.href = '/';
         }
-    }, [user]);
+    }, [user, roles]);
+
 
     useEffect(() => {
         fetch(CUTS_BASE_URL, {

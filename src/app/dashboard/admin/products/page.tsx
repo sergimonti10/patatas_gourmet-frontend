@@ -39,15 +39,16 @@ export default function ProductTable() {
         direction: "ascending",
     });
     const router = useRouter();
-    const { token, user } = useUserStore();
+    const { token, user, roles } = useUserStore();
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [isPopoverOpen, setIsPopoverOpen] = useState<number | null>(null);
 
     useEffect(() => {
-        if (!user) {
+        if (!user || !roles.includes('super-admin')) {
             window.location.href = '/';
         }
-    }, [user]);
+    }, [user, roles]);
+
 
     useEffect(() => {
         fetch(PRODUCTS_BASE_URL)

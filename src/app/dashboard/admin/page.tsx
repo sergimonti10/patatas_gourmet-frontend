@@ -6,13 +6,14 @@ import React, { useEffect } from "react";
 import useUserStore from "../../../../store/authStore";
 
 export default function AdminPage() {
-    const { user } = useUserStore();
+    const { user, roles } = useUserStore();
 
     useEffect(() => {
-        if (!user) {
+        if (!user || !roles.includes('super-admin')) {
             window.location.href = '/';
         }
-    }, [user]);
+    }, [user, roles]);
+
 
     return (
         <div className="flex flex-col items-center justify-center m-5 p-4">
