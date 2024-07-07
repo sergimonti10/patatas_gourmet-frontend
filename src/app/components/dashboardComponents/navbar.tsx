@@ -210,6 +210,41 @@ export default function NavBar() {
                 </NavbarContent>
             )}
 
+            {mounted && !user && (
+                <NavbarContent as="div" justify="end">
+                    <Dropdown placement="bottom-end" className='bg-amber-50'>
+                        <DropdownTrigger>
+                            <Avatar
+                                isBordered
+                                as="button"
+                                className="transition-transform"
+                                color="warning"
+                                name="Invitado"
+                                size="sm"
+                                src={imgUser}
+                            />
+                        </DropdownTrigger>
+                        <DropdownMenu aria-label="Profile Actions" variant="flat" className='text-amber-950'>
+                            <DropdownItem key="no_user" className="h-14 gap-2 cursor-default">
+                                <p className="font-semibold">Invitado</p>
+                            </DropdownItem>
+                            <DropdownItem key="login" color="success">
+                                <Link href="/login" className="flex items-center">
+                                    <FaUser className='w-4 h-4 mr-2' />
+                                    Iniciar sesión
+                                </Link>
+                            </DropdownItem>
+                            <DropdownItem key="register" color="warning">
+                                <Link href="/register" className="flex items-center">
+                                    <IoLogOut className='w-4 h-4 mr-2' />
+                                    Registrarse
+                                </Link>
+                            </DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown>
+                </NavbarContent>
+            )}
+
             <NavbarMenu className='text-amber-950'>
                 {links.map((link, index) => (
                     <NavbarMenuItem key={`${link.name}-${index}`}>
