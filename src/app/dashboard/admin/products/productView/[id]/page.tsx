@@ -13,13 +13,13 @@ interface ProductDetailProps {
 }
 
 export default function ProductViewPage({ params }: ProductDetailProps) {
-    const { user, roles } = useUserStore();
+    const { user, role } = useUserStore();
 
     useEffect(() => {
-        if (!user || !Array.isArray(roles) || !roles.includes('super-admin')) {
+        if (!user || !role.includes('super-admin')) {
             window.location.href = '/';
         }
-    }, [user, roles]);
+    }, [user, role]);
 
 
     return (

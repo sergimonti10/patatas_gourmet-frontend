@@ -8,14 +8,14 @@ import useUserStore from "../../../../../store/authStore";
 
 export default function RegisterPage() {
     const router = useRouter();
-    const { user, roles } = useUserStore();
+    const { user, role } = useUserStore();
 
 
     useEffect(() => {
-        if (!user || !Array.isArray(roles) || !roles.includes('super-admin')) {
+        if (!user || !role.includes('super-admin')) {
             window.location.href = '/';
         }
-    }, [user, roles]);
+    }, [user, role]);
 
 
     return (
