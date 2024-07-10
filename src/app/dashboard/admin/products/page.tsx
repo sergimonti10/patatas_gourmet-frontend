@@ -44,7 +44,7 @@ export default function ProductTable() {
     const [isPopoverOpen, setIsPopoverOpen] = useState<number | null>(null);
 
     useEffect(() => {
-        if (!user || !roles.includes('super-admin')) {
+        if (!user || !Array.isArray(roles) || !roles.includes('super-admin')) {
             window.location.href = '/';
         }
     }, [user, roles]);

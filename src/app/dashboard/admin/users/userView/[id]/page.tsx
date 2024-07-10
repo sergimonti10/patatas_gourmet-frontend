@@ -16,11 +16,11 @@ export default function UserViewPage({ params }: UserDetailProps) {
     const { user, roles } = useUserStore();
 
     useEffect(() => {
-        if (!user || !roles.includes('super-admin')) {
+        if (!user || !Array.isArray(roles) || !roles.includes('super-admin')) {
             window.location.href = '/';
         }
     }, [user, roles]);
-    
+
 
     return (
         <div className="w-auto h-auto">
