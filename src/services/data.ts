@@ -5,7 +5,7 @@ export async function fetchProducts() {
   try {
     const response = await fetch(PRODUCTS_BASE_URL, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
+      headers: { Accept: 'application/json' }
     });
     if (!response.ok) {
       throw new Error(`Error en la solicitud: ${response.status} - ${response.statusText}`);
