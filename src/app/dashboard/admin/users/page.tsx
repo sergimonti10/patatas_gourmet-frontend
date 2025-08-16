@@ -123,7 +123,7 @@ export default function UserTable() {
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                credentials: 'include',
+                // credentials: 'include',
             });
             setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
             toast.success("¡Usuario eliminado correctamente!")

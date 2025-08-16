@@ -18,7 +18,7 @@ export default function PageDeleteUser() {
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                credentials: 'include',
+                // credentials: 'include',
             });
             toast.success("¡Usuario eliminado correctamente!");
             logout();

@@ -113,7 +113,7 @@ export default function ProductTable() {
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                credentials: 'include',
+                // credentials: 'include',
             });
             setProducts(prevProducts => prevProducts.filter(product => product.id !== productId));
             toast.success("¡Producto eliminado correctamente!")

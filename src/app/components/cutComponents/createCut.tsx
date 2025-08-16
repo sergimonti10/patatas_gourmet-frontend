@@ -28,7 +28,7 @@ const CreateCut = ({ router }: CreateCutProps) => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                credentials: 'include',
+                // credentials: 'include',
                 body: JSON.stringify(cutData),
             });
 

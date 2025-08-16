@@ -116,7 +116,7 @@ export default function CutTable() {
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                credentials: 'include',
+                // credentials: 'include',
             });
             setCuts(prevCuts => prevCuts.filter(cut => cut.id !== cutId));
             toast.success("¡Corte eliminado correctamente!")
