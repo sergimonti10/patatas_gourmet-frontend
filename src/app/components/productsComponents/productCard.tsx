@@ -110,14 +110,13 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { toast } from 'react-toastify';
 import { Card, CardFooter, Image, Button, Tooltip } from "@nextui-org/react";
 import { BASE_URL } from "@/services/links";
 import { Product, Review, User } from "../../../services/definitions";
 import { FaCartPlus } from "react-icons/fa6";
 import useCartStore from "../../../../store/cartStore";
-import Link from "next/link";
 
 interface ProductCardProps {
     product: Product;
@@ -125,7 +124,6 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, user }: ProductCardProps) {
-    const router = useRouter();
     const [isHovered, setIsHovered] = useState(false);
     const addMany = useCartStore((s: any) => s.addMany);
     const MAX = useCartStore((s: any) => s.MAX);
@@ -135,22 +133,23 @@ export default function ProductCard({ product, user }: ProductCardProps) {
     useEffect(() => {
         const fetchReviews = async () => {
             try {
-                const r = await fetch(`${BASE_URL}products/${product.id}/reviews`);
-                if (!r.ok) throw new Error('Error al cargar las valoraciones');
-                let data: Review[] = await r.json();
+                const response = await fetch(`${BASE_URL}products/${product.id}/reviews`);
+                if (!response.ok) throw new Error('Error al cargar las valoraciones');
+                let data: Review[] = await response.json();
                 data = data.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
                 setReviews(data);
-            } catch (e: any) {
-                toast.error(e.message);
+            } catch (error: any) {
+                toast.error(error.message);
             }
         };
         fetchReviews();
     }, [product.id]);
 
-    const goToDetails = () => router.push(`/dashboard/store/${product.id}`);
-
     const handleAddToCart = (e: React.MouseEvent) => {
-        e.stopPropagation(); // 👈 evita que se dispare la navegación al pulsar el botón
+        // MUY IMPORTANTE: impedir que el <a> navegue cuando se pulsa el botón
+        e.preventDefault();
+        e.stopPropagation();
+
         if (!user) {
             toast.warning("Debe registrarse para realizar una compra.");
             return;
@@ -171,30 +170,31 @@ export default function ProductCard({ product, user }: ProductCardProps) {
     const renderStars = (rating: number) =>
         Array.from({ length: rating }, (_, i) => <span key={i} className="text-amber-500">★</span>);
 
-    const calculateAverageRating = (arr: Review[]) => {
-        if (arr.length === 0) return "-";
-        const total = arr.reduce((s, r) => s + r.rating, 0);
-        return (total / arr.length).toFixed(1);
+    const calculateAverageRating = (reviews: Review[]) => {
+        if (reviews.length === 0) return "-";
+        const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+        return (totalRating / reviews.length).toFixed(1);
     };
 
     return (
         <Card
+            // Card se renderiza como <a> de next/link → clic en cualquier parte navega
+            as={Link}
+            href={`/dashboard/store/${product.id}`}
+            prefetch={false}
             isFooterBlurred
+            isPressable
             className="w-52 sm:w-72 lg:w-80 h-auto mx-auto active:scale-95 transition-all cursor-pointer"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            onClick={goToDetails}   // 👈 click en cualquier parte de la tarjeta → detalle
         >
-            {/* Si prefieres Link, puedes dejarlo, pero el onClick ya garantiza la navegación */}
-            <div className="z-0">
-                <Image
-                    removeWrapper
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                    src={product.image || '/images/no-image.png'}
-                    loading="lazy"
-                />
-            </div>
+            <Image
+                removeWrapper
+                alt={product.name}
+                className="z-0 w-full h-full object-cover"
+                src={product.image || '/images/no-image.png'}
+                loading="lazy"
+            />
 
             <CardFooter className="absolute bg-white/30 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">
                 <div>
@@ -221,7 +221,7 @@ export default function ProductCard({ product, user }: ProductCardProps) {
                         color="primary"
                         radius="full"
                         size="sm"
-                        onClick={handleAddToCart}  // 👈 no navega gracias al stopPropagation
+                        onClick={handleAddToCart}  // ← bloquea navegación del enlace
                     >
                         <FaCartPlus className="w-5 h-5" />
                     </Button>
